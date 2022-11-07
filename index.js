@@ -20,7 +20,7 @@ export default {
 
     let {colo: worker, city} = request.cf
     let id = env.durableObjects.newUniqueId()
-    return env.durableObjects.get(id).fetch(null, {
+    return env.durableObjects.get(id).fetch(request.url, {
       method: 'POST',
       body: JSON.stringify({city, worker})
     })
@@ -39,7 +39,7 @@ export class DurableObject {
     if (!object) {
       let object = await getColo()
       let id = this.env.durableObjects.idFromName('/')
-      return this.env.durableObjects.get(id).fetch(null, {
+      return this.env.durableObjects.get(id).fetch(request.url, {
         method: 'POST',
         body: JSON.stringify({city, worker, object})
       })
