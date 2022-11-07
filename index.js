@@ -81,7 +81,12 @@ export class DurableObject {
         return html + `<tr><td class="pv3 pr3 bb b--black-20">${colos[worker].city} (${worker})</td><td class="pv3 pr3 bb b--black-20">${objs}</td></tr>`
       }, '')
 
-      return new Response(template(city, colos[worker], colos[object], rows), {
+      let enabledColos = Object.entries(this.colos)
+        .filter(([worker, objects]) => worker in objects)
+
+      let coverage = (0 | 100 * enabledColos.length / Object.keys(this.colos).length)
+
+      return new Response(template(coverage, city, colos[worker], colos[object], rows), {
         headers: {'content-type': 'text/html;charset=utf-8'}
       })
     }
@@ -93,7 +98,7 @@ export class DurableObject {
 }
 
 
-let template = (city, worker, object, rows) => `<!DOCTYPE html>
+let template = (coverage, city, worker, object, rows) => `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -107,6 +112,7 @@ let template = (city, worker, object, rows) => `<!DOCTYPE html>
       <p class="measure lh-copy">
         <a href="https://developers.cloudflare.com/workers/learning/using-durable-objects" class="link blue">Cloudflare Durable Objects</a> are a novel approach to stateful compute based on <a href="https://workers.cloudflare.com/" class="link blue">Cloudflare Workers</a>. They aim to locate both compute <i>and</i> state closest to end users.
         This page tracks where new durable objects are created; for example, when you loaded this page from ${city}, a worker in ${worker.city} (${worker.iata}) created a durable object in ${object.city} (${object.iata}).
+        Currently, durable objects are available in ${coverage}% of Cloudflare PoPs.
       </p>
 
       <br><br>
