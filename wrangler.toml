@@ -1,0 +1,13 @@
+name = "where-durableobjects-live"
+compatibility_date = "2022-11-07"
+main = "index.js"
+
+route = {pattern = "where.durableobjects.live", custom_domain = true}
+
+[[durable_objects.bindings]]
+name = "durableObjects"
+class_name = "DurableObject"
+
+[[migrations]]
+tag = "2021-06-09"
+new_classes = ["DurableObject"]
