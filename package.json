@@ -1,0 +1,14 @@
+{
+	"scripts": {
+		"build": "esbuild src/index.ts --minify --bundle --loader:.png=binary --target=esnext --format=esm --outfile=dist/index.js"
+	},
+	"dependencies": {
+		"hono": "^2.6.1",
+		"nanoid": "^4.0.0"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20221111.1",
+		"esbuild": "^0.16.4",
+		"wrangler": "^2.6.2"
+	}
+}

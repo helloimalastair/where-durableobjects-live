@@ -1,13 +1,22 @@
 name = "where-durableobjects-live"
 compatibility_date = "2022-11-07"
-main = "index.js"
+main = "dist/index.js"
+workers_dev = false
 
-route = {pattern = "where.durableobjects.live", custom_domain = true}
+kv_namespaces = [
+	{ binding = "KV", id = "b54534bcb1b249249357548d0fe65076", preview_id = "b54534bcb1b249249357548d0fe65076" },
+]
+[triggers]
+crons = ["*/5 * * * *"]
 
 [[durable_objects.bindings]]
-name = "durableObjects"
-class_name = "DurableObject"
+name = "DO"
+class_name = "DO"
 
 [[migrations]]
 tag = "2021-06-09"
-new_classes = ["DurableObject"]
+new_classes = ["DO"]
+
+[[unsafe.bindings]]
+type = "analytics_engine"
+name = "NewDOLatency"
