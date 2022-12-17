@@ -1,6 +1,8 @@
 interface SQLResponse {
 	data: {
-		[key: string]: string
+		worker: string,
+		durable: string,
+		ammt: number
 	}[]
 }
 interface SQLParsed {

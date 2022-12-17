@@ -8,7 +8,7 @@ import type { Handler } from "hono";
 
 const htmlOptions: Handler = () => new Response(null, { status: 204, headers: headers() });
 
-const html:Handler<{ Bindings: Environment }> = async (c) => {
+const html: Handler<{ Bindings: Environment }> = async (c) => {
 	if (!c.req.cf) {
 		return c.text("CFData unavailable", 500);
 	}
@@ -21,7 +21,7 @@ const html:Handler<{ Bindings: Environment }> = async (c) => {
 		return c.text("KV Error", 500);
 	}
 	const nonce = nanoid();
-	return c.html(HTML(nonce, sql.coverage * 100, (c.req.cf as { city: string }).city, worker, durable, rows(getColo, sql.colos), sql.hourly), 200, headers(nonce));
+	return c.html(HTML(nonce, Math.round(sql.coverage * 10000) / 100, (c.req.cf as { city: string }).city, worker, durable, rows(getColo, sql.colos), sql.hourly), 200, headers(nonce));
 };
 
 export { htmlOptions, html };
