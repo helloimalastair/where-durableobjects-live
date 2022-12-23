@@ -2,7 +2,7 @@ interface SQLResponse {
 	data: {
 		worker: string,
 		durable: string,
-		ammt: number
+		ammt: string
 	}[]
 }
 interface SQLParsed {

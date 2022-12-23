@@ -8,7 +8,7 @@ const colos = async (env: Environment) => {
 						method: "POST",
 						headers: {
 							"content-type": "text/plain",
-							authorization: env.API_TOKEN,
+							authorization: `Bearer ${env.API_TOKEN}`,
 						},
 						body: "SELECT blob1 as worker, blob2 as durable, count() as ammt FROM NewDOLatency GROUP BY blob1, blob2",
 					},
@@ -17,7 +17,7 @@ const colos = async (env: Environment) => {
 				if (!a[b.worker]) {
 					a[b.worker] = {};
 				}
-				a[b.worker][b.durable] = (a[b.worker][b.durable] || 0) + b.ammt;
+				a[b.worker][b.durable] = (a[b.worker][b.durable] || 0) + Number(b.ammt);
 				return a;
 			}, {} as SQLParsed),
 		)

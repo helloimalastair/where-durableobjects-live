@@ -1,6 +1,6 @@
 interface Environment {
 	KV: KVNamespace,
 	DO: DurableObjectNamespace,
-	NewDOLatency: AnalyticsEngineDataset,
+	WDL: AnalyticsEngineDataset,
 	API_TOKEN: string,
 }

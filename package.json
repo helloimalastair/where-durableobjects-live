@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"build": "esbuild src/index.ts --minify --bundle --loader:.png=binary --target=esnext --format=esm --outfile=dist/index.js"
+		"build": "esbuild src/index.ts --bundle --loader:.png=binary --target=esnext --format=esm --outfile=dist/index.js"
 	},
 	"dependencies": {
 		"hono": "^2.6.1",

@@ -6,6 +6,14 @@ workers_dev = false
 kv_namespaces = [
 	{ binding = "KV", id = "b54534bcb1b249249357548d0fe65076", preview_id = "b54534bcb1b249249357548d0fe65076" },
 ]
+
+analytics_engine_datasets = [
+	{ binding = "WDL", dataset = "WhereDurableObjectsLive" }
+]
+
+[build]
+command = "pnpm build"
+
 [triggers]
 crons = ["*/5 * * * *"]
 
@@ -16,7 +24,3 @@ class_name = "DO"
 [[migrations]]
 tag = "2021-06-09"
 new_classes = ["DO"]
-
-[[unsafe.bindings]]
-type = "analytics_engine"
-name = "NewDOLatency"
