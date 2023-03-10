@@ -1,11 +1,10 @@
 import type { Context } from "hono";
-import { nanoid } from "nanoid";
 
-export default async function (c: Context<string, { Bindings: Environment }>) {
+export default async function (c: Context<{ Bindings: Environment }>) {
 	const data = [
-		(c.req.cf as IncomingRequestCfProperties).colo,
-		await (await c.env.DO.get(c.env.DO.newUniqueId()).fetch(c.req)).text(),
+		(c.req.raw.cf as IncomingRequestCfProperties).colo,
+		await (await c.env.DO.get(c.env.DO.newUniqueId()).fetch(c.req.raw)).text(),
 	];
-	c.env.WDL.writeDataPoint({ indexes: [nanoid()], blobs: data });
+	c.env.WDL.writeDataPoint({ indexes: [data[1]], blobs: data });
 	return data;
 };
