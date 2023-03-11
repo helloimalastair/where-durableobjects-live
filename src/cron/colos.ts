@@ -10,7 +10,7 @@ const colos = async (env: Environment) => {
 							"content-type": "text/plain",
 							authorization: `Bearer ${env.API_TOKEN}`,
 						},
-						body: "SELECT blob1 as worker, blob2 as durable, count() as ammt FROM NewDOLatency GROUP BY blob1, blob2",
+						body: "SELECT blob1 as worker, blob2 as durable, count() as ammt FROM WhereDurableObjectsLive GROUP BY blob1, blob2",
 					},
 				)).json<SQLResponse>()
 			).data.reduce((a, b) => {
