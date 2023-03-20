@@ -4,9 +4,7 @@ main = "src/index.ts"
 workers_dev = false
 minify = true
 
-rules = [
-  { type = "Data", globs = ["**/*.png"], fallthrough = false }
-]
+rules = [{ type = "Data", globs = ["**/*.png"], fallthrough = false }]
 
 kv_namespaces = [
 	{ binding = "KV", id = "b54534bcb1b249249357548d0fe65076", preview_id = "b54534bcb1b249249357548d0fe65076" },
