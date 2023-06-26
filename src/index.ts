@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import scheduled from "./cron";
 import genData from "./genData";
 import { html, htmlOptions } from "./HTML";
-import { json, jsonOptions } from "./json";
+import { jsonV1, jsonV2, jsonOptions } from "./json";
 import { globe, globeOptions } from "./assets";
 
 const app = new Hono<{ Bindings: Environment }>();
@@ -18,7 +18,11 @@ app.get("/ping", async (c) => {
 
 app.options("/json", jsonOptions);
 
-app.get("/json", json);
+app.get("/json", jsonV1);
+
+app.options("/v2/json", jsonOptions);
+
+app.get("/v2/json", jsonV2);
 
 app.get("/cron", async c => {
 	if(new URL(c.req.url).searchParams.get("key") === "SuperDurableSuperObjects") {

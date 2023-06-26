@@ -1,10 +1,15 @@
 {
+	"private": true,
+	"scripts": {
+		"dev": "wrangler dev -j",
+		"deploy": "wrangler deploy -j"
+	},
 	"dependencies": {
-		"hono": "^3.1.1",
-		"nanoid": "^4.0.1"
+		"hono": "^3.2.6",
+		"nanoid": "^4.0.2"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20230307.0",
-		"wrangler": "^2.12.3"
+		"@cloudflare/workers-types": "^4.20230518.0",
+		"wrangler": "^3.1.1"
 	}
 }

@@ -7,7 +7,7 @@ const hourly = async (env: Environment) => parseInt(await (
 				"content-type": "text/plain",
 				authorization: `Bearer ${env.API_TOKEN}`,
 			},
-			body: "SELECT COUNT() FROM WhereDurableObjectsLive WHERE timestamp > NOW() - INTERVAL '1' HOUR",
+			body: "SELECT COUNT() FROM WDL WHERE timestamp > NOW() - INTERVAL '1' HOUR",
 		},
 	)
 	).json<CountResponse>()).data[0]["count()"]);
