@@ -4,6 +4,7 @@
 	"main": "src/index.ts",
 	"workers_dev": false,
 	"minify": true,
+	"logpush": true,
 	"rules": [{ 
 		"type": "Data",
 		"globs": ["**/*.png"], 
