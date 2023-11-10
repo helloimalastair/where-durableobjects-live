@@ -10,12 +10,12 @@ const jsonCORSHeaders = {
 
 const jsonOptions: Handler = async () => new Response(null, { status: 204, headers: jsonCORSHeaders });
 
-const json = async (version: string, c: Context<{ Bindings: Environment }>) => {
+const json = async (versionOrName: string, c: Context<{ Bindings: Environment }>) => {
 	const cached = await cache.match(c.req.raw);
 	if (cached) {
 		return cached;
 	}
-	const res = c.json(await c.env.KV.get("wdl-" + version, "json"), 200, {
+	const res = c.json(await c.env.KV.get("wdl-" + versionOrName, "json"), 200, {
 		...jsonCORSHeaders,
 		"cache-control": "public, max-age=300",
 	});
@@ -27,4 +27,6 @@ const jsonV1: Handler = async (c) => json("v1", c);
 
 const jsonV2: Handler = async (c) => json("v2", c);
 
-export { jsonOptions, jsonV1, jsonV2 };
+const regions: Handler = async (c) => json("regions", c);
+
+export { jsonOptions, jsonV1, jsonV2, regions };

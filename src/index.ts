@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import scheduled from "./cron";
 import genData from "./genData";
 import { html, htmlOptions } from "./HTML";
-import { jsonV1, jsonV2, jsonOptions } from "./json";
+import { jsonV1, jsonV2, jsonOptions, regions } from "./json";
 import { globe, globeOptions } from "./assets";
 
 const app = new Hono<{ Bindings: Environment }>();
@@ -24,8 +24,11 @@ app.options("/v2/json", jsonOptions);
 
 app.get("/v2/json", jsonV2);
 
+app.options("/v2/json", jsonOptions);
+app.get("/v2/regions", regions);
+
 app.get("/cron", async c => {
-	if(new URL(c.req.url).searchParams.get("key") === "SuperDurableSuperObjects") {
+	if (new URL(c.req.url).searchParams.get("key") === "SuperDurableSuperObjects") {
 		await scheduled({} as ScheduledController, c.env, c.executionCtx);
 		return c.text("OK");
 	}

@@ -16,12 +16,14 @@ const html: Handler<{ Bindings: Environment }> = async (c) => {
 	let [worker, durable] = await genData(c);
 	worker = getColo(worker);
 	durable = getColo(durable);
-	const sql = await c.env.KV.get<KVEntry>("wdl", "json");
+	const sql = await c.env.KV.get<KVEntry<ColoJSONV1>>("wdl-v1", "json");
 	if (!sql) {
 		return c.text("KV Error", 500);
 	}
 	const nonce = nanoid();
-	return c.html(HTML(nonce, Math.round(sql.coverage * 10000) / 100, (c.req.raw.cf as { city: string }).city, worker, durable, rows(getColo, sql.colos), sql.hourly), 200, headers(nonce));
+	const rowsHtml = rows(getColo, sql.colos);
+	console.log(rowsHtml);
+	return c.html(HTML(nonce, Math.round(sql.coverage * 10000) / 100, (c.req.raw.cf as { city: string }).city, worker, durable, rowsHtml, sql.hourly), 200, headers(nonce));
 };
 
 export { htmlOptions, html };

@@ -7,14 +7,14 @@ const colos = async (env: Environment): Promise<ColoJSONV2> => {
 				"content-type": "text/plain",
 				authorization: `Bearer ${env.API_TOKEN}`,
 			},
-			body: "SELECT blob1 as worker, blob2 as durable, count() as ammt, avg(double1) as latency FROM WDL GROUP BY blob1, blob2",
+			body: "SELECT blob1 as worker, blob2 as durable, count() as ammt, avg(double1) as latency FROM WDL WHERE isEmpty(blob3) GROUP BY blob1, blob2",
 		},
 	)).json<SQLResponse>();
 	const collapsedEntries = Object.entries(data.reduce((obj, row) => {
 		if (!obj[row.worker]) {
 			obj[row.worker] = {};
 		}
-		if(!obj[row.worker][row.durable]) {
+		if (!obj[row.worker][row.durable]) {
 			obj[row.worker][row.durable] = { hits: 0, latency: 0 };
 		}
 		obj[row.worker][row.durable].hits += Number(row.ammt);
@@ -22,7 +22,7 @@ const colos = async (env: Environment): Promise<ColoJSONV2> => {
 		return obj;
 	}, {} as SQLParsed));
 	const sortedAndReformatted = collapsedEntries
-		.map(([ workerColo, rows]) => {
+		.map(([workerColo, rows]) => {
 			let rowsSorted = Object.entries(rows).sort(([coloAName], [coloBName]) =>
 				coloAName.localeCompare(coloBName),
 			);
@@ -30,10 +30,10 @@ const colos = async (env: Environment): Promise<ColoJSONV2> => {
 			return [
 				workerColo,
 				Object.fromEntries(
-					rowsSorted.map(([doColo, { hits, latency}]) => [
+					rowsSorted.map(([doColo, { hits, latency }]) => [
 						doColo,
 						{
-							likehlihood: Number((hits / total).toFixed(3)),
+							likehlihood: Number((hits / total).toFixed(4)),
 							latency: Number(latency.toFixed(2))
 						}
 					]),
@@ -41,7 +41,6 @@ const colos = async (env: Environment): Promise<ColoJSONV2> => {
 			];
 		})
 		.sort(([coloAName], [coloBName]) => (coloAName as string).localeCompare(coloBName as string));
-	console.log(JSON.stringify(sortedAndReformatted, null, '\t'));
 	return Object.fromEntries(sortedAndReformatted);
 };
 export default colos;
