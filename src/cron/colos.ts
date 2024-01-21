@@ -7,7 +7,7 @@ const colos = async (env: Environment): Promise<ColoJSONV2> => {
 				"content-type": "text/plain",
 				authorization: `Bearer ${env.API_TOKEN}`,
 			},
-			body: "SELECT blob1 as worker, blob2 as durable, count() as ammt, avg(double1) as latency FROM WDL WHERE isEmpty(blob3) GROUP BY blob1, blob2",
+			body: "SELECT blob1 as worker, index1 as durable, count() as ammt, avg(double1) as latency FROM WDL WHERE isEmpty(blob3) GROUP BY blob1, index1",
 		},
 	)).json<SQLResponse>();
 	const collapsedEntries = Object.entries(data.reduce((obj, row) => {

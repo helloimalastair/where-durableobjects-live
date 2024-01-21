@@ -7,7 +7,7 @@ const getRegions = async (env: Environment): Promise<RegionMapping> => {
 				"content-type": "text/plain",
 				authorization: `Bearer ${env.API_TOKEN}`,
 			},
-			body: "SELECT blob1 as worker, blob2 as durable, blob3 as region, count() as ammt, avg(double1) as latency FROM WDL WHERE NOT isEmpty(blob3) GROUP BY blob1, blob2, blob3",
+			body: "SELECT blob1 as worker, index1 as durable, blob3 as region, count() as ammt, avg(double1) as latency FROM WDL WHERE NOT isEmpty(blob3) GROUP BY blob1, index1, blob3",
 		},
 	)).json<SQLRegionResponse>();
 	return Object.fromEntries(Object.entries(data.reduce((obj, row) => {
