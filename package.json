@@ -1,15 +1,18 @@
 {
-	"private": true,
-	"scripts": {
-		"dev": "wrangler dev -j",
-		"deploy": "wrangler deploy -j"
-	},
-	"dependencies": {
-		"hono": "^3.5.8",
-		"nanoid": "^4.0.2"
-	},
-	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20230904.0",
-		"wrangler": "^3.7.0"
-	}
+  "name": "@wdol/monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^1.11.3"
+  },
+  "scripts": {
+    "dev": "turbo dev bindings"
+  },
+  "dependencies": {
+    "geojson": "^0.5.0",
+    "svelte-media-queries": "^1.6.2"
+  }
 }

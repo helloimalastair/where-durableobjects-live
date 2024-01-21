@@ -1,0 +1,15 @@
+{
+  "name": "@wdol/worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev -j",
+		"deploy": "wrangler deploy -j",
+    "bindings": "cf-bindings-proxy --kv KV=9a9dd89eb5d5488cb95282bcbee03ddb"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20240117.0",
+    "wrangler": "3.25.0",
+    "@wdol/types": "workspace:*"
+  }
+}

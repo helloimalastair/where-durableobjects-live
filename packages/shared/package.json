@@ -1,0 +1,5 @@
+{
+	"name": "@wdol/shared",
+	"private": true,
+  "main": "src/index.ts"
+}

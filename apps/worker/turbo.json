@@ -1,0 +1,13 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+	"extends": ["//"],	
+	"pipeline": {
+		"dev": {
+		},
+		"bindings": {
+			"outputMode": "errors-only",
+			"cache": false,
+			"persistent": true
+		}
+	}
+}

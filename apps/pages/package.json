@@ -1,0 +1,32 @@
+{
+  "name": "pages",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"deploy": "wrangler pages deploy --branch production .svelte-kit/cloudflare"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-cloudflare": "^2.3.3",
+    "@sveltejs/kit": "^1.20.4",
+    "@types/mapbox-gl": "^2.7.18",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "svelte": "^4.0.5",
+    "svelte-check": "^3.4.3",
+    "tailwindcss": "^3.3.5",
+    "tslib": "^2.4.1",
+    "typescript": "^5.0.0",
+    "vite": "^4.4.2",
+    "@wdol/types": "workspace:*",
+    "@wdol/shared": "workspace:*"
+  },
+  "type": "module",
+  "dependencies": {
+    "cf-bindings-proxy": "^0.7.1",
+    "mapbox-gl": "^3.1.2",
+    "svelte-multiselect": "^10.2.0"
+  }
+}
