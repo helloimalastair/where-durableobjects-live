@@ -1,6 +1,7 @@
 import type { Context } from "hono";
 
 const REGIONS = ["wnam", "enam", "sam", "weur", "eeur", "apac", "oc", "afr", "me"] as const;
+const JURISDICTIONS = ["eu", "fedramp"] as const;
 
 export default async function (c: Context<{ Bindings: Environment }>) {
 	const originColo = (c.req.raw.cf as IncomingRequestCfProperties).colo;
@@ -18,6 +19,13 @@ export default async function (c: Context<{ Bindings: Environment }>) {
 			}).fetch(c.req.raw)).text();
 			const end = Date.now();
 			c.env.WDL.writeDataPoint({ indexes: [durableColo], blobs: [originColo, durableColo, region], doubles: [(end - start) / 2] });
+		}
+		for(const jurisdiction of JURISDICTIONS) {
+			const subnamespace = c.env.DO.jurisdiction(jurisdiction);
+			const start = Date.now();
+			const durableColo = await (await subnamespace.get(subnamespace.newUniqueId()).fetch(c.req.raw)).text();
+			const end = Date.now();
+			c.env.WDL.writeDataPoint({ indexes: [durableColo], blobs: [originColo, durableColo, "", jurisdiction], doubles: [(end - start) / 2] });
 		}
 	})());
 	return blobs;

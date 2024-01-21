@@ -5,11 +5,11 @@
 		"deploy": "wrangler deploy -j"
 	},
 	"dependencies": {
-		"hono": "^3.5.8",
-		"nanoid": "^4.0.2"
+		"hono": "^3.12.6",
+		"nanoid": "^5.0.4"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20230904.0",
-		"wrangler": "^3.7.0"
+		"@cloudflare/workers-types": "^4.20240117.0",
+		"wrangler": "^3.23.0"
 	}
 }
