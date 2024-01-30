@@ -1,9 +1,8 @@
 import type { MapState } from "$lib";
 import { error } from "@sveltejs/kit";
-import type { Jurisdiction } from "@wdol/shared";
 import { binding } from "cf-bindings-proxy";
 import type { PageServerLoad } from "./$types";
-import type { IATA, LiveKV } from "@wdol/types";
+import type { DurableObjectColo, IATA, LiveKV } from "@wdol/types";
 
 export const load: PageServerLoad = async ({ platform, depends }) => {
 	depends("map:update");
@@ -13,13 +12,12 @@ export const load: PageServerLoad = async ({ platform, depends }) => {
 		throw error(500, "KV entry not found");
 	}
 	const map: MapState = {
-		mode: "jurisdictions",
-		data: Object.entries(live.jurisdiction).reduce((acc, [jurisdiction, colos]) => {
+		highlight: Object.entries(live.jurisdiction).reduce((acc, [_, colos]) => {
 			for(const colo in colos) {
-				acc[colo] = jurisdiction as Jurisdiction;
+				acc.add(colo as IATA);
 			}
 			return acc;
-		}, {} as Record<IATA, Jurisdiction>),
+		}, new Set<DurableObjectColo>()),
 	};
 	return { map };
 };

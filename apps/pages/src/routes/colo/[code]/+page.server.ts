@@ -32,9 +32,13 @@ export const load: PageServerLoad = async ({ platform, params }) => {
 			},
 		};
 	}
-	const consumers: Record<WorkerColo, true> = {}; 
+	// const consumers: Record<WorkerColo, true> = {}; 
+	const related = new Set<WorkerColo>();
+	const connections: [WorkerColo, WorkerColo][] = [];
+	related.add(coloCode);
 	const spawnsHereFrom = colo.from[coloCode] ? colo.from[coloCode].map(e => {
-		consumers[e] = true;
+		related.add(e);
+		connections.push([e, coloCode]);
 		return { name: iata[e], code: e };
 	}) : [];
 	const spawnsHereRegions = Object.entries(region.hosts).filter(([_, colos]) => colos[coloCode]) as [keyof typeof regions, Record<string, number>][];
@@ -59,22 +63,15 @@ export const load: PageServerLoad = async ({ platform, params }) => {
 			spawnsHere.jurisdiction = spawnsHereJurisdiction[0];
 		}
 	}
-	const producers: Record<WorkerColo, true> = {};
 	const to = colo.to[coloCode].reduce((acc, colo) => {
-		// if(colo.code === coloCode) {
-		// 	return acc;
-		// }
-		producers[colo.code] = true;
+		related.add(colo.code);
+		connections.push([coloCode, colo.code]);
 		acc.push({ name: iata[colo.code], ...colo });
 		return acc;
 	}, [] as ({ name: string} | ColoTo)[]);
 	const map: MapState = {
-		mode: "colo",
-		data: {
-			origin: coloCode,
-			producers,
-			consumers
-		}
+		highlight: related,
+		connections
 	};
 	return {
 		dataAvailable: true,

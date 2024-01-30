@@ -1,9 +1,9 @@
+import type { MapState } from "$lib";
 import { error } from "@sveltejs/kit";
 import { binding } from "cf-bindings-proxy";
 import type { PageServerLoad } from "./$types";
-import type { LiveKV, IATAKV, IATA } from "@wdol/types";
 import { regions, type Region } from "@wdol/shared";
-import type { MapState } from "$lib";
+import type { LiveKV, IATAKV, IATA, DurableObjectColo } from "@wdol/types";
 
 const guard = (key: string): key is Region => key in regions;
 
@@ -20,16 +20,10 @@ export const load: PageServerLoad = async ({ params, platform }) => {
 		throw error(500, "KV entry not found");
 	}
 	const map: MapState = {
-		mode: "regions",
-		data: Object.entries(live.region.hosts).reduce((acc, [region, colos]) => {
-			if(region !== params.code) {
-				return acc;
-			}
-			for(const colo in colos) {
-				acc[colo] = [region as Region];
-			}
+		highlight: Object.keys(live.region.hosts[params.code]).reduce((acc, colo) => {
+			acc.add(colo as IATA);
 			return acc;
-		}, {} as Record<IATA, Region[]>),
+		}, new Set<DurableObjectColo>()),
 	};
 	return {
 		map,

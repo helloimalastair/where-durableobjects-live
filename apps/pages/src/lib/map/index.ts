@@ -1,20 +1,17 @@
 import { Map } from "mapbox-gl";
 import type MapState from "./types";
 import { goto } from "$app/navigation";
-import type { GeoJSONSource, Point } from "mapbox-gl";
-import type { IATA, StatusField, StatusItem } from "@wdol/types";
-import type { FeatureCollection, LineString, Point } from "geojson";
-import { center, dashArraySequence, emptyFeatureCollection, emptyLineString, strokeColor, maybeInvertMeridian } from "./utils";
+import type { GeoJSONSource } from "mapbox-gl";
+import type { IATA, StatusField, WorkerColo } from "@wdol/types";
+import type { FeatureCollection, Geometry } from "geojson";
+import { dashArraySequence, emptyFeatureCollection, emptyLineString, maybeInvertMeridian } from "./utils";
 
 export class MapManager {
 	private readonly map: Map;
 	private readonly startupPromise: Promise<void>;
-	private status: StatusField;
-	private interval: number | null = null;
-	private loopCounter = 0;
 	private dashStep = 0;
 	private goDash = false;
-	constructor(container: HTMLDivElement, status: StatusField, onLoad: () => void) {
+	constructor(container: HTMLDivElement, onLoad: () => void) {
 		this.map = new Map({
 			accessToken: "pk.eyJ1IjoiYWxhc3RhaXJ0ZWNobm9sb2dpZXMiLCJhIjoiY2xydDh3cjlsMDR3YzJpbjZhMDYwa2s1YyJ9.TieFXO6HlDdXuDFLqHLxNg",
 			container,
@@ -22,7 +19,6 @@ export class MapManager {
 			center: [0, 0],
 			zoom: 1,
 		});
-		this.status = status;
 		this.startupPromise = new Promise(resolve => this.map.on("load", () => {
 			onLoad();
 			this.init();
@@ -54,6 +50,12 @@ export class MapManager {
 			id: "colos",
 			type: "circle",
 			source: "colos",
+			layout: {
+				"circle-sort-key": ["case",
+					["get", "highlight"], 2,
+					1
+				],
+			},
 			paint: {
 				"circle-color": ["case",
 					["==", ["get", "status"], "operational"], "#46a46c",
@@ -61,12 +63,25 @@ export class MapManager {
 					["==", ["get", "status"], "maintenance"], "#2c7cb0",
 					"#a0aec0",
 				],
-				"circle-stroke-color": strokeColor(0),
+				"circle-stroke-color": ["case",
+					// Durable
+					["get", "isDOCapable"], "#fbad41",
+					// Worker
+					"#0b3675"
+				],
 				"circle-radius": ["case", 
 					["get", "origin"], 8,
 					6
 				],
 				"circle-stroke-width": 3,
+				"circle-opacity": ["case",
+					["get", "highlight"], 1,
+					0.3
+				],
+				"circle-stroke-opacity": ["case",
+					["get", "highlight"], 1,
+					0.3
+				],
 			}
 		});
 		// Events
@@ -93,15 +108,24 @@ export class MapManager {
 		this.map.on("mouseenter", "colos", () => this.map.getCanvas().style.cursor = "pointer");
 		this.map.on("mouseleave", "colos", () => this.map.getCanvas().style.cursor = "");
 	}
-	private async generateColos(statusData: StatusField) {
+	async render(statusData: StatusField, custom?: MapState) {
 		await this.startupPromise;
-		const newColos = structuredClone(emptyFeatureCollection) as FeatureCollection<Point>;
+		const newColos = structuredClone(emptyFeatureCollection) as FeatureCollection<Geometry>;
 		for(const [iata, { status, coords, isDOCapable }] of Object.entries(statusData)) {
+			let highlight = false;
+			if(!custom) {
+				highlight = true;
+			}	else if (custom?.highlightDOs) {
+				highlight = isDOCapable;
+			} else if(custom?.highlight.has(iata)) {
+				highlight = true;
+			}
 			newColos.features.push({
 				type: "Feature",
 				properties: {
 					iata,
 					status,
+					highlight,
 					isDOCapable
 				},
 				geometry: {
@@ -110,16 +134,35 @@ export class MapManager {
 				}
 			});
 		}
-		return newColos;
+		if(custom?.connections) {
+			(this.map.getSource("connections") as GeoJSONSource).setData({
+				type: "FeatureCollection",
+				features: custom.connections.map(([from, to]) => {
+					const line = maybeInvertMeridian([statusData[from].coords, statusData[to].coords]);
+					return emptyLineString(line);
+				})
+			});
+			this.goDash = true;
+			this.dashStep = 0;
+			this.animateDashLine(0);
+		} else {
+			(this.map.getSource("connections") as GeoJSONSource).setData(emptyFeatureCollection);
+			this.goDash = false;
+		}
+		(this.map.getSource("colos") as GeoJSONSource).setData(newColos);
 	}
-	private renderBaseMode() {
-		(this.map.getSource("colos") as GeoJSONSource).setData(this.generateColos(MapState.statusData));
+	async flyTo(statusData: StatusField, colo: WorkerColo, zoom: number) {
+		await this.startupPromise;
+		this.map.flyTo({
+			center: statusData[colo].coords,
+			zoom
+		});
 	}
-	private animateDashLine(timestamp: number) {
+	private async animateDashLine(timestamp: number) {
 		if(!this.goDash) {
 			return;
 		}
-		const newStep = Math.floor((timestamp / 50) % dashArraySequence.length);
+		const newStep = Math.floor((timestamp / 100) % dashArraySequence.length);
 		if (newStep !== this.dashStep) {
 			this.map.setPaintProperty("connections", "line-dasharray", dashArraySequence[this.dashStep]);
 			this.dashStep = newStep;
@@ -128,4 +171,4 @@ export class MapManager {
 	}
 }
 
-export type { default as MapState } from "./types";
+export type { MapState };

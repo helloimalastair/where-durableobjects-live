@@ -3,6 +3,7 @@
 	import { onMount } from "svelte";
  	import { MapManager } from "$lib";
 	import { page } from "$app/stores";
+	import "mapbox-gl/dist/mapbox-gl.css";
 	import { invalidate } from "$app/navigation";
 	import { MapIcon, MediaQuery, Spreadsheet } from "$components";
 
@@ -10,28 +11,30 @@
 	let map: MapManager;
 	let container: HTMLDivElement;
 	let mapShown = false;
+	let highlightDOs: boolean;
 	let mapLoaded = false;
 	const showMap = () => mapShown = !mapShown;
-
 	const format = (date: number) => new Intl.DateTimeFormat("en-GB", {
 		dateStyle: "full",
 		timeStyle: "long",
 		timeZone: "utc",
 	}).format(date);
+
 	$: {
 		if(map) {
-			map.render(data.colos, $page.data.map ?? {
-				mode: "base"
-			});
+			if(!$page.data.map && highlightDOs) {
+				map.render(data.colos, {
+					highlightDOs: true,
+				});
+			} else {
+				map.render(data.colos, $page.data.map);
+			}
 		}
 	}
 
   onMount(() => {
 		map = new MapManager(container, () => mapLoaded = true);
-		map.render(data.colos, $page.data.map ?? {
-			mode: "base"
-		});
-		console.log(data.colos);
+		map.render(data.colos, $page.data.map);
 		const interval = setInterval(() => {
 			console.log("Status data available soon.");
 			invalidate("map:update");
@@ -65,10 +68,13 @@
 		<div class="w-full h-full" bind:this={container}></div>
 		{ matches }
 		{#if matches || mapShown}
-			<details class="bg-gray-300 duration-300 open:bg-amber-200 w-fit absolute top-2 right-2">
-				<summary class="cursor-pointer bg-inherit px-5 py-3 text-lg">Legend</summary>
-				<div class="bg-white px-5 py-3 text-sm font-light">
-					{#if !$page.data.map || $page.data.map.mode === "colo"}
+			<div class={"bg-gray-300 w-fit absolute top-2 right-2" + (!$page.data.map ? " p-2" : "")}>
+				{#if !$page.data.map}
+					<input type="checkbox" id="coding" name="interest" value="coding" bind:checked={highlightDOs}/> Toggle DO Highligt
+				{/if}
+				<details class="duration-300">
+					<summary class="cursor-pointer bg-inherit px-5 py-3 text-lg">Legend </summary>
+					<div class="bg-white px-5 py-3 text-sm font-light">
 						<h2 class="text-lg font-bold">Status</h2>
 						<div class="flex items-center gap-2">
 							<div class="w-5 h-5 rounded-full bg-status-operational inline-block"></div>
@@ -86,8 +92,6 @@
 							<div class="w-5 h-5 rounded-full bg-status-unknown inline-block"></div>
 							<p>Unknown</p>
 						</div>
-					{/if}
-					{#if $page.data.map && $page.data.map.mode === "colo"}
 						<h2 class="text-lg font-bold">Miscellaneous</h2>
 						<div class="flex items-center gap-2 mt-2">
 							<div class="w-5 h-5 rounded-full border-4 border-is-durable inline-block"></div>
@@ -97,63 +101,15 @@
 							<div class="w-5 h-5 rounded-full border-4 border-is-worker inline-block"></div>
 							<p>Worker-only Datacenter</p>
 						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="text-4xl leading-3">┅</div>
-							<p>Connection </p>
-						</div>
-					{/if}
-					{#if $page.data.map && $page.data.map.mode === "regions"}
-						<h2 class="text-lg font-bold">Regions</h2>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-wnam inline-block"></div>
-							<p>Western North America(wnam)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-enam inline-block"></div>
-							<p>Eastern North America(enam)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-sam inline-block"></div>
-							<p>South America(sam)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-weur inline-block"></div>
-							<p>Western Europe(weur)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-eeur inline-block"></div>
-							<p>Eastern Europe(eeur)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-apac inline-block"></div>
-							<p>Asia-Pacific(apac)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-oc inline-block"></div>
-							<p>Oceania(oc)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-afr inline-block"></div>
-							<p>Africa(afr)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-region-me inline-block"></div>
-							<p>Middle East(me)</p>
-						</div>
-					{/if}
-					{#if $page.data.map && $page.data.map.mode === "jurisdictions"}
-						<h2 class="text-lg font-bold">Jurisdictions</h2>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-jurisdiction-eu inline-block"></div>
-							<p>European Union(eu)</p>
-						</div>
-						<div class="flex items-center gap-2 mt-2">
-							<div class="w-5 h-5 rounded-full border-4 border-jurisdiction-fedramp inline-block"></div>
-							<p>FedRAMP(fedramp)</p>
-						</div>
-					{/if}
-				</div>
-			</details>
+						{#if $page.data.map?.connections}
+							<div class="flex items-center gap-2 mt-2">
+								<div class="text-4xl leading-3">┅</div>
+								<p>Connection </p>
+							</div>
+						{/if}
+					</div>
+				</details>
+			</div>
 		{/if}
 	</MediaQuery>
 </div>

@@ -1,9 +1,8 @@
 import type { MapState } from "$lib";
 import { error } from "@sveltejs/kit";
-import type { Region } from "@wdol/shared";
 import { binding } from "cf-bindings-proxy";
 import type { PageServerLoad } from "./$types";
-import type { IATA, LiveKV } from "@wdol/types";
+import type { DurableObjectColo, IATA, LiveKV } from "@wdol/types";
 
 export const load: PageServerLoad = async ({ platform, depends }) => {
 	depends("map:update");
@@ -13,16 +12,12 @@ export const load: PageServerLoad = async ({ platform, depends }) => {
 		throw error(500, "KV entry not found");
 	}
 	const map: MapState = {
-		mode: "regions",
-		data: Object.entries(live.region.hosts).reduce((acc, [region, colos]) => {
+		highlight: Object.entries(live.region.hosts).reduce((acc, [_, colos]) => {
 			for(const colo in colos) {
-				if(!(colo in acc)) {
-					acc[colo] = [];
-				}
-				acc[colo].push(region as Region);
+				acc.add(colo as IATA);
 			}
 			return acc;
-		}, {} as Record<IATA, Region[]>),
+		}, new Set<DurableObjectColo>()),
 	};
 	return { map };
 };
