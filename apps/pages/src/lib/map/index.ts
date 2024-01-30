@@ -1,19 +1,20 @@
 import { Map } from "mapbox-gl";
 import type MapState from "./types";
 import { goto } from "$app/navigation";
-import type { GeoJSONSource } from "mapbox-gl";
+import type { GeoJSONSource, Point } from "mapbox-gl";
 import type { IATA, StatusField, StatusItem } from "@wdol/types";
 import type { FeatureCollection, LineString, Point } from "geojson";
-import { center, dashArraySequence, emptyFeatureCollection, emptyLineString, strokeColor } from "./utils";
+import { center, dashArraySequence, emptyFeatureCollection, emptyLineString, strokeColor, maybeInvertMeridian } from "./utils";
 
 export class MapManager {
 	private readonly map: Map;
 	private readonly startupPromise: Promise<void>;
+	private status: StatusField;
 	private interval: number | null = null;
 	private loopCounter = 0;
 	private dashStep = 0;
 	private goDash = false;
-	constructor(container: HTMLDivElement, onLoad: () => void) {
+	constructor(container: HTMLDivElement, status: StatusField, onLoad: () => void) {
 		this.map = new Map({
 			accessToken: "pk.eyJ1IjoiYWxhc3RhaXJ0ZWNobm9sb2dpZXMiLCJhIjoiY2xydDh3cjlsMDR3YzJpbjZhMDYwa2s1YyJ9.TieFXO6HlDdXuDFLqHLxNg",
 			container,
@@ -21,6 +22,7 @@ export class MapManager {
 			center: [0, 0],
 			zoom: 1,
 		});
+		this.status = status;
 		this.startupPromise = new Promise(resolve => this.map.on("load", () => {
 			onLoad();
 			this.init();
@@ -68,12 +70,17 @@ export class MapManager {
 			}
 		});
 		// Events
-		this.map.on("click", "colos", (e) => {
-			const maybeColo = e.features;
-			if(!maybeColo) {
+		this.map.on("click", (e) => {
+			const features = this.map.queryRenderedFeatures(e.point, {
+				layers: ["colos", "connections"],
+			});
+			if(!features.length) {
+				goto("/colo");
+			}
+			if(features[0].layer.id === "connections") {
 				return;
 			}
-			const maybeProps = maybeColo[0].properties;
+			const maybeProps = features[0].properties;
 			if(!maybeProps) {
 				return;
 			}
@@ -86,120 +93,27 @@ export class MapManager {
 		this.map.on("mouseenter", "colos", () => this.map.getCanvas().style.cursor = "pointer");
 		this.map.on("mouseleave", "colos", () => this.map.getCanvas().style.cursor = "");
 	}
-	async render(statusData: StatusField, state: MapState) {
+	private async generateColos(statusData: StatusField) {
 		await this.startupPromise;
 		const newColos = structuredClone(emptyFeatureCollection) as FeatureCollection<Point>;
-		if(state.mode !== "regions") {
-			clearInterval(this.interval);
-			this.interval = null;
+		for(const [iata, { status, coords, isDOCapable }] of Object.entries(statusData)) {
+			newColos.features.push({
+				type: "Feature",
+				properties: {
+					iata,
+					status,
+					isDOCapable
+				},
+				geometry: {
+					type: "Point",
+					coordinates: coords,
+				}
+			});
 		}
-		if(state.mode !== "colo") {
-			this.goDash = false;
-			(this.map.getSource("connections") as GeoJSONSource).setData(structuredClone(emptyFeatureCollection));
-		}
-		switch(state.mode) {
-			case "regions": {
-				for(const [iata, { status }] of Object.entries(statusData) as [IATA, StatusItem][]) {
-					if(!state.data[iata]) {
-						continue;
-					}
-					newColos.features.push({
-						type: "Feature",
-						properties: {
-							iata,
-							status,
-							regions: state.data[iata],
-						},
-						geometry: {
-							type: "Point",
-							coordinates: statusData[iata].coords,
-						}
-					});
-				}
-				this.interval = setInterval(() => this.map.setPaintProperty("colos", "circle-stroke-color", strokeColor(++this.loopCounter)), 2e3) as unknown as number;
-				// Typecast required as something is importing node types
-				break;
-			}
-			case "jurisdictions": {
-				for(const [iata, { status }] of Object.entries(statusData) as [IATA, StatusItem][]) {
-					const jurisdiction = state.data[iata];
-					if(!jurisdiction) {
-						continue;
-					}
-					newColos.features.push({
-						type: "Feature",
-						properties: {
-							iata,
-							status,
-							jurisdiction,
-						},
-						geometry: {
-							type: "Point",
-							coordinates: statusData[iata].coords,
-						}
-					});
-				}
-				break;
-			}
-			case "colo": {
-				const originCoords = statusData[state.data.origin].coords;
-				const connections = structuredClone(emptyFeatureCollection) as FeatureCollection<LineString>;
-				for(const [iata, { status, coords, isDOCapable }] of Object.entries(statusData)) {
-					if(state.data.producers[iata]) {
-						if(state.data.origin !== iata) {
-							connections.features.push(emptyLineString(statusData[iata].coords, originCoords));
-						}
-					} else if(state.data.consumers[iata]) {
-						if(state.data.origin !== iata) {
-							connections.features.push(emptyLineString(originCoords, statusData[iata].coords));
-						}
-					} else if(state.data.origin !== iata) {
-						continue;
-					}
-					newColos.features.push({
-						type: "Feature",
-						properties: {
-							iata,
-							status,
-							origin: state.data.origin === iata,
-							isDOCapable,
-						},
-						geometry: {
-							type: "Point",
-							coordinates: coords,
-						}
-					});
-				}
-				(this.map.getSource("connections") as GeoJSONSource).setData(connections);
-				this.goDash = true;
-				this.dashStep = 0;
-				this.animateDashLine(0);
-				break;
-			}
-			case "base": {
-				for(const [iata, { status, coords, isDOCapable }] of Object.entries(statusData)) {
-					newColos.features.push({
-						type: "Feature",
-						properties: {
-							iata,
-							status,
-							isDOCapable
-						},
-						geometry: {
-							type: "Point",
-							coordinates: coords,
-						}
-					});
-				}
-				break;
-			}
-		}
-		this.map.flyTo({
-			center: center(newColos),
-			essential: true,
-			zoom: 2,
-		});
-		(this.map.getSource("colos") as GeoJSONSource).setData(newColos);
+		return newColos;
+	}
+	private renderBaseMode() {
+		(this.map.getSource("colos") as GeoJSONSource).setData(this.generateColos(MapState.statusData));
 	}
 	private animateDashLine(timestamp: number) {
 		if(!this.goDash) {
