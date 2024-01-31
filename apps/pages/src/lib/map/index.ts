@@ -4,7 +4,7 @@ import { goto } from "$app/navigation";
 import type { GeoJSONSource } from "mapbox-gl";
 import type { IATA, StatusField, WorkerColo } from "@wdol/types";
 import type { FeatureCollection, Geometry } from "geojson";
-import { dashArraySequence, emptyFeatureCollection, emptyLineString, maybeInvertMeridian } from "./utils";
+import { dashArraySequence, emptyFeatureCollection, emptyLineString, maybeInvertMeridian, type Coord, bbox } from "./utils";
 
 export class MapManager {
 	private readonly map: Map;
@@ -151,12 +151,29 @@ export class MapManager {
 		}
 		(this.map.getSource("colos") as GeoJSONSource).setData(newColos);
 	}
-	async flyTo(statusData: StatusField, colo: WorkerColo, zoom: number) {
+	async flyTo(statusData: StatusField, custom?: MapState) {
 		await this.startupPromise;
-		this.map.flyTo({
-			center: statusData[colo].coords,
-			zoom
-		});
+		if(!custom || custom.highlightDOs) {
+			return;
+		}
+		if(custom.resetPosition) {
+			this.map.flyTo({
+				center: [0, 0],
+				zoom: 1,
+			});
+			return;
+		}
+		const coordArr: Coord[] = [];
+		for(const [iata, { coords }] of Object.entries(statusData)) {
+			if(custom.highlight.has(iata)) {
+				coordArr.push(coords);
+			}
+		}
+		if(!coordArr.length) {
+			return;
+		}
+		console.log(bbox(coordArr));
+		this.map.fitBounds(bbox(coordArr));
 	}
 	private async animateDashLine(timestamp: number) {
 		if(!this.goDash) {

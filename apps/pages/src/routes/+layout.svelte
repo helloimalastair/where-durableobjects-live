@@ -1,7 +1,7 @@
 <script lang="ts">
   import "../app.css";
 	import { onMount } from "svelte";
- 	import { MapManager } from "$lib";
+ 	import { MapManager, type MapState } from "$lib";
 	import { page } from "$app/stores";
 	import "mapbox-gl/dist/mapbox-gl.css";
 	import { invalidate } from "$app/navigation";
@@ -12,6 +12,7 @@
 	let container: HTMLDivElement;
 	let mapShown = false;
 	let highlightDOs: boolean;
+	let legendShown: boolean;
 	let mapLoaded = false;
 	const showMap = () => mapShown = !mapShown;
 	const format = (date: number) => new Intl.DateTimeFormat("en-GB", {
@@ -19,6 +20,7 @@
 		timeStyle: "long",
 		timeZone: "utc",
 	}).format(date);
+	const flyTo = (state: MapState) => map && map.flyTo(data.colos, state);
 
 	$: {
 		if(map) {
@@ -31,10 +33,12 @@
 			}
 		}
 	}
+	$: flyTo($page.data.map);
 
   onMount(() => {
 		map = new MapManager(container, () => mapLoaded = true);
 		map.render(data.colos, $page.data.map);
+		flyTo($page.data.map);
 		const interval = setInterval(() => {
 			console.log("Status data available soon.");
 			invalidate("map:update");
@@ -68,11 +72,11 @@
 		<div class="w-full h-full" bind:this={container}></div>
 		{ matches }
 		{#if matches || mapShown}
-			<div class={"bg-gray-300 w-fit absolute top-2 right-2" + (!$page.data.map ? " p-2" : "")}>
+			<div class={"bg-gray-300 w-fit absolute top-2 right-2" + ($page.data.map ? "" : " p-2") + (legendShown ? "" : " opacity-50")}>
 				{#if !$page.data.map}
 					<input type="checkbox" id="coding" name="interest" value="coding" bind:checked={highlightDOs}/> Toggle DO Highligt
 				{/if}
-				<details class="duration-300">
+				<details class="duration-300" bind:open={legendShown}>
 					<summary class="cursor-pointer bg-inherit px-5 py-3 text-lg">Legend </summary>
 					<div class="bg-white px-5 py-3 text-sm font-light">
 						<h2 class="text-lg font-bold">Status</h2>

@@ -18,6 +18,7 @@ export const load: PageServerLoad = async ({ platform, depends }) => {
 			}
 			return acc;
 		}, new Set<DurableObjectColo>()),
+		resetPosition: true
 	};
 	return { map };
 };

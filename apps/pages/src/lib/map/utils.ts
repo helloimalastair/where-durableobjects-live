@@ -1,4 +1,3 @@
-import type { Expression } from "mapbox-gl";
 import type { Feature, FeatureCollection, LineString, Point } from "geojson";
 
 type Coord = [number, number];
@@ -6,7 +5,7 @@ type CoordLine = [Coord, Coord];
 
 type BBox = [number, number, number, number];
 /*
-	* Simplified from Turf.js to only include the center function
+	* Simplified from Turf.js to only include the center/bbox(modified) function
 */
 function center(points: FeatureCollection<Point>): Coord {
   const ext: BBox = [Infinity, Infinity, -Infinity, -Infinity];
@@ -26,10 +25,32 @@ function center(points: FeatureCollection<Point>): Coord {
   });
   return [(ext[0] + ext[2]) / 2, (ext[1] + ext[3]) / 2];
 }
+function bbox(geojson: Coord[]): BBox {
+  const result: BBox = [Infinity, Infinity, -Infinity, -Infinity];
+  for(const coord of geojson) {
+    if (result[0] > coord[0]) {
+      result[0] = coord[0];
+    }
+    if (result[1] > coord[1]) {
+      result[1] = coord[1];
+    }
+    if (result[2] < coord[0]) {
+      result[2] = coord[0];
+    }
+    if (result[3] < coord[1]) {
+      result[3] = coord[1];
+    }
+  };
+	// Multiplier to add buffer space
+	result[0] -= 1;
+	result[1] -= 1;
+	result[2] += 1;
+	result[3] += 1;
+  return result;
+}
 
 function crossesAntiMeridian(lon1: number, lon2: number) {
 	const absLonDiff = Math.abs(lon1 - lon2);
-	
 	// Check if longitudes have different signs and if their absolute difference is greater than 180 degrees
 	if ((lon1 * lon2 < 0) && (absLonDiff > 180)) {
 			return true; // Line crosses the anti-meridian
@@ -86,4 +107,5 @@ const dashArraySequence = [
 	[0, 3.5, 3, 0.5],
 ];
 
-export { center, emptyFeatureCollection, emptyLineString, dashArraySequence, maybeInvertMeridian };
+export { center, emptyFeatureCollection, emptyLineString, dashArraySequence, maybeInvertMeridian, bbox };
+export type { Coord };
