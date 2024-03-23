@@ -24,6 +24,9 @@ export const load: PageServerLoad = async ({ platform, params }) => {
 	const { colo, region, jurisdiction } = live;
 	if(!colo.to[coloCode]) {
 		return {
+			map: {
+				highlight: new Set<WorkerColo>([coloCode]),
+			},
 			dataAvailable: false,
 			colo: {
 				name: iata[coloCode],

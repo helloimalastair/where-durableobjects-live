@@ -20,7 +20,9 @@
 		timeStyle: "long",
 		timeZone: "utc",
 	}).format(date);
-	const flyTo = (state: MapState) => map && map.flyTo(data.colos, state);
+	const flyTo = (state: MapState) => {
+		map && map.flyTo(data.colos, state)
+	};
 
 	$: {
 		if(map) {
@@ -39,10 +41,7 @@
 		map = new MapManager(container, () => mapLoaded = true);
 		map.render(data.colos, $page.data.map);
 		flyTo($page.data.map);
-		const interval = setInterval(() => {
-			console.log("Status data available soon.");
-			invalidate("map:update");
-		}, 6e4);
+		const interval = setInterval(() => invalidate("map:update"), 6e4);
 		return () => clearInterval(interval);
   });
 </script>

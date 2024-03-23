@@ -13,7 +13,7 @@ export class MapManager {
 	private goDash = false;
 	constructor(container: HTMLDivElement, onLoad: () => void) {
 		this.map = new Map({
-			accessToken: "pk.eyJ1IjoiYWxhc3RhaXJ0ZWNobm9sb2dpZXMiLCJhIjoiY2xydDh3cjlsMDR3YzJpbjZhMDYwa2s1YyJ9.TieFXO6HlDdXuDFLqHLxNg",
+			accessToken: "pk.eyJ1IjoiYWxhc3RhaXJ0ZWNobm9sb2dpZXMiLCJhIjoiY2xzaGd1bm94MXR6azJpcGNwM3JsM2szbiJ9.hksk8vj03uRgjzwsZDfttw",
 			container,
 			style: "mapbox://styles/mapbox/streets-v11",
 			center: [0, 0],
@@ -172,8 +172,9 @@ export class MapManager {
 		if(!coordArr.length) {
 			return;
 		}
-		console.log(bbox(coordArr));
-		this.map.fitBounds(bbox(coordArr));
+		const [one, two, three, four] = bbox(coordArr);
+		const box = maybeInvertMeridian([[three, four], [one, two]]);
+		this.map.fitBounds(box);
 	}
 	private async animateDashLine(timestamp: number) {
 		if(!this.goDash) {

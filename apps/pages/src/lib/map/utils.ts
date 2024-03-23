@@ -53,9 +53,9 @@ function crossesAntiMeridian(lon1: number, lon2: number) {
 	const absLonDiff = Math.abs(lon1 - lon2);
 	// Check if longitudes have different signs and if their absolute difference is greater than 180 degrees
 	if ((lon1 * lon2 < 0) && (absLonDiff > 180)) {
-			return true; // Line crosses the anti-meridian
+		return true; // Line crosses the anti-meridian
 	} else {
-			return false; // Line does not cross the anti-meridian
+		return false; // Line does not cross the anti-meridian
 	}
 }
 
@@ -66,7 +66,7 @@ function maybeInvertMeridian(coordinates: CoordLine): CoordLine {
 		const endLng = coordinates[1][0];
 		if (endLng - startLng >= 180) {
 			newCoords[1][0] -= 360;
-		} else if (endLng - startLng < 180) {
+		} else {
 			newCoords[1][0] += 360;
 		}
 		return newCoords;

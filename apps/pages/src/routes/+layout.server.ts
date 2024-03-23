@@ -8,7 +8,6 @@ export const load: LayoutServerLoad = async ({ platform, depends }) => {
 	const KV = binding<KVNamespace>("KV", { fallback: platform?.env! });
 	const data = await KV.get<LiveKV>("live", "json");
 	if(!data) {
-		console.log(data);
 		throw error(500, "KV entry not found");
 	}
 	return { colos: data.status, statusUpdatedAt: data.updatedAt };
