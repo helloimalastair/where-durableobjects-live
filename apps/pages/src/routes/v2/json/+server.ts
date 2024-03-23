@@ -9,3 +9,8 @@ export const GET: RequestHandler = async (c) => {
 		},
 	});
 };
+
+export const OPTIONS: RequestHandler = () => new Response(null, { status: 204, headers: {
+	"allow": "GET, OPTIONS",
+	"access-control-allow-origin": "*"
+} });
