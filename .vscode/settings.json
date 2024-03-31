@@ -3,11 +3,12 @@
 		"**/.*ignore": true,
 		"**/.*rc": true,
 		"**/bun.lockb": true,
-		"**/postcss.config.js": true
+		"**/postcss.config.js": true,
+		"apps/pages/vite.config.ts*": true
 	},
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
-		"package.json": "tsconfig.json",
+		"package.json": "tsconfig.json, tsconfig.*.json",
 		"svelte.config.js": "vite.config.ts, tailwind.config.ts, postcss.config.ts",
 	}
 }

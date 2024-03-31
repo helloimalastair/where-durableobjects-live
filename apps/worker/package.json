@@ -8,8 +8,8 @@
     "bindings": "cf-bindings-proxy --kv KV=9a9dd89eb5d5488cb95282bcbee03ddb"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20240320.1",
-    "wrangler": "3.37.0",
+    "@cloudflare/workers-types": "^4.20240329.0",
+    "wrangler": "3.41.0",
     "@wdol/types": "workspace:*",
     "geojson": "^0.5.0"
   }

@@ -1,15 +1,9 @@
 import { genData } from "$lib";
-import { error } from "@sveltejs/kit";
-import type { LiveKV } from "@wdol/types";
-import { binding } from "cf-bindings-proxy";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ platform }) => {
-	const KV = binding<KVNamespace>("KV", { fallback: platform?.env! });
-	const live = await KV.get<LiveKV>("live", "json");
-	if(!live) {
-		throw error(500, "KV entry not found");
-	}
+export const load: PageServerLoad = async ({ depends, platform, locals }) => {
+	depends("data:update");
+	const live = await locals.getLive();
 	const spawnData = await genData(platform);
 	const { city, worker, durable } = spawnData || {
 		city: "Vadum",
@@ -21,7 +15,6 @@ export const load: PageServerLoad = async ({ platform }) => {
 		worker,
 		durable,
 		coverage: live.frontpage.coverage,
-		hourly: live.frontpage.hourly,
-		dataUpdatedAt: live.updatedAt,
+		hourly: live.frontpage.hourly
 	};
 };

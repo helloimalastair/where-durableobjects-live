@@ -1,0 +1,3 @@
+[submodule "packages/iata/data"]
+	path = packages/iata/data
+	url = https://github.com/davidmegginson/ourairports-data

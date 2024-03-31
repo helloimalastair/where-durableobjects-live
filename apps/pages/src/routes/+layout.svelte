@@ -41,7 +41,7 @@
 		map = new MapManager(container, () => mapLoaded = true);
 		map.render(data.colos, $page.data.map);
 		flyTo($page.data.map);
-		const interval = setInterval(() => invalidate("map:update"), 6e4);
+		const interval = setInterval(() => invalidate("data:update"), 6e4);
 		return () => clearInterval(interval);
   });
 </script>
@@ -52,8 +52,7 @@
 			<slot />
 		</main>
 		<footer class="text-center text-italic text-sm mt-8 pb-8">
-			<p>Page Data Updated At: <span class="whitespace-nowrap">{format($page.data.dataUpdatedAt)}</span></p>
-			<p>Status Data Updated At: <span class="whitespace-nowrap">{format($page.data.statusUpdatedAt)}</span></p>
+			<p>Data Updated At: <span class="whitespace-nowrap">{format($page.data.updatedAt)}</span></p>
 		</footer>
 	</div>
 </div>

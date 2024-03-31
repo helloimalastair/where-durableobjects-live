@@ -1,4 +1,5 @@
 <script lang="ts">
+	import iata from "@wdol/iata";
 	import { browser } from "$app/environment";
 	import { Head, Anchor } from "$components";
 	import { goto } from "$app/navigation";

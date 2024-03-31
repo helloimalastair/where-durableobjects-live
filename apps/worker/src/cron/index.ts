@@ -11,7 +11,8 @@ const cron: ExportedHandlerScheduledHandler<Environment> = async (event, env, ct
 	const live = {
 		colo: data[0],
 		frontpage: data[1],
-		status: data[2],
+		status: data[2].status,
+		iata: data[2].iata,
 		region: data[3],
 		jurisdiction: data[4],
 		updatedAt: Date.now(),

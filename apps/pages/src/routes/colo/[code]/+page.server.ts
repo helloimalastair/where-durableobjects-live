@@ -1,11 +1,11 @@
+import type { MapState } from "$lib";
 import { regions } from "@wdol/shared";
-import type { ColoTo, LiveKV, WorkerColo } from "@wdol/types";
-import { binding } from "cf-bindings-proxy";
-import { status, type MapState } from "$lib";
 import type { PageServerLoad } from "./$types";
 import { error, redirect } from "@sveltejs/kit";
+import type { ColoTo, WorkerColo } from "@wdol/types";
 
-export const load: PageServerLoad = async ({ platform, params }) => {
+export const load: PageServerLoad = async ({ depends, params, locals }) => {
+	depends("data:update");
 	const coloCode = params.code;
 	if(params.code.match(/[a-z]/g)) {
 		throw redirect(301, `/colo/${params.code.toUpperCase()}`);
@@ -13,15 +13,7 @@ export const load: PageServerLoad = async ({ platform, params }) => {
 	if(params.code.length !== 3 && params.code !== "SFO-DOG") {
 		throw error(400, "Invalid colo format");
 	}
-	const KV = binding<KVNamespace>("KV", { fallback: platform?.env! });
-	const [iata, live] = await Promise.all([KV.get<Record<string, string>>("iata", "json"), KV.get<LiveKV>("live", "json")]);
-	if(!iata) {
-		throw error(500, "KV iata not found");
-	}
-	if(!live) {
-		throw error(500, "KV entry not found");
-	}
-	const { colo, region, jurisdiction } = live;
+	const { colo, region, iata, status, jurisdiction } = await locals.getLive();
 	if(!colo.to[coloCode]) {
 		return {
 			map: {
@@ -31,7 +23,7 @@ export const load: PageServerLoad = async ({ platform, params }) => {
 			colo: {
 				name: iata[coloCode],
 				code: coloCode,
-				status: status[live.status[coloCode].status]
+				status: status[status[coloCode].status]
 			},
 		};
 	}
@@ -81,13 +73,12 @@ export const load: PageServerLoad = async ({ platform, params }) => {
 		colo: {
 			name: iata[coloCode],
 			code: coloCode,
-			status: status[live.status[coloCode].status]
+			status: status[status[coloCode].status]
 		},
 		regions: region.latency[coloCode].map(e => ({ name: regions[e.code], ...e })),
 		spawnsHere,
 		to,
-		map,
-		dataUpdatedAt: live.updatedAt,
+		map
 	};
 };
 

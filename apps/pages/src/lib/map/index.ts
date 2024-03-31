@@ -2,7 +2,7 @@ import { Map } from "mapbox-gl";
 import type MapState from "./types";
 import { goto } from "$app/navigation";
 import type { GeoJSONSource } from "mapbox-gl";
-import type { IATA, StatusField, WorkerColo } from "@wdol/types";
+import type { IATA, StatusField } from "@wdol/types";
 import type { FeatureCollection, Geometry } from "geojson";
 import { dashArraySequence, emptyFeatureCollection, emptyLineString, maybeInvertMeridian, type Coord, bbox } from "./utils";
 

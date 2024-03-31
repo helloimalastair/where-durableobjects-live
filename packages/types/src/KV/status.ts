@@ -2,7 +2,7 @@ import type { IATA } from "..";
 import type { Status } from "@wdol/shared";
 
 interface StatusItem {
-	location: string;
+	name: string;
 	coords: [number, number];
 	status: Status;
 	isDOCapable: boolean;

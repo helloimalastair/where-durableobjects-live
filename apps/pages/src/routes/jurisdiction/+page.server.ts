@@ -1,16 +1,10 @@
 import type { MapState } from "$lib";
-import { error } from "@sveltejs/kit";
-import { binding } from "cf-bindings-proxy";
 import type { PageServerLoad } from "./$types";
-import type { DurableObjectColo, IATA, LiveKV } from "@wdol/types";
+import type { DurableObjectColo, IATA } from "@wdol/types";
 
-export const load: PageServerLoad = async ({ platform, depends }) => {
-	depends("map:update");
-	const KV = binding<KVNamespace>("KV", { fallback: platform?.env! });
-	const live = await KV.get<LiveKV>("live", "json");
-	if(!live) {
-		throw error(500, "KV entry not found");
-	}
+export const load: PageServerLoad = async ({ depends, locals }) => {
+	depends("data:update");
+	const live = await locals.getLive();
 	const map: MapState = {
 		highlight: Object.entries(live.jurisdiction).reduce((acc, [_, colos]) => {
 			for(const colo in colos) {

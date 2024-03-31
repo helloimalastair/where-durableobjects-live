@@ -1,26 +1,19 @@
-import { error } from "@sveltejs/kit";
-import { binding } from "cf-bindings-proxy";
-import type { PageServerLoad } from "./$types";
-import type { DurableObjectColo, IATA, IATAKV, LiveKV } from "@wdol/types";
-import { jurisdictions, type Jurisdiction } from "@wdol/shared";
 import type { MapState } from "$lib";
+import { error } from "@sveltejs/kit";
+import type { PageServerLoad } from "./$types";
+import type { DurableObjectColo, IATA } from "@wdol/types";
+import { jurisdictions, type Jurisdiction } from "@wdol/shared";
 
 const guard = (key: string): key is Jurisdiction => key in jurisdictions;
 
-export const load: PageServerLoad = async ({ params, platform }) => {
+export const load: PageServerLoad = async ({ depends, params, locals }) => {
+	depends("data:update");
 	if (!guard(params.code)) {
 		throw error(404, "Not Found");
 	}
-	const KV = binding<KVNamespace>("KV", { fallback: platform?.env! });
-	const [live, iata] = await Promise.all([KV.get<LiveKV>("live", "json"), KV.get<IATAKV>("iata", "json")]);
-	if(!live) {
-		throw error(500, "KV entry not found");
-	}
-	if(!iata) {
-		throw error(500, "KV entry not found");
-	}
+	const { jurisdiction, iata } = await locals.getLive();
 	const map: MapState = {
-		highlight: Object.keys(live.jurisdiction[params.code]).reduce((acc, colo) => {
+		highlight: Object.keys(jurisdiction[params.code]).reduce((acc, colo) => {
 			acc.add(colo as IATA);
 			return acc;
 		}, new Set<DurableObjectColo>()),
@@ -31,12 +24,11 @@ export const load: PageServerLoad = async ({ params, platform }) => {
 			code: params.code,
 			name: jurisdictions[params.code],
 		},
-		serves: Object.entries(live.jurisdiction[params.code]).map(([durable, count]) => ({
+		serves: Object.entries(jurisdiction[params.code]).map(([durable, count]) => ({
 			code: durable,
 			name: iata[durable],
 			count
-		})),
-		dataUpdatedAt: live.updatedAt,
+		}))
 	};
 };
 

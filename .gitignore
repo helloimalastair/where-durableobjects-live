@@ -3,3 +3,4 @@ dist
 .dev.vars
 .wrangler
 .turbo
+packages/iata/src/data.json
