@@ -1,5 +1,6 @@
 import type { MapState } from "$lib";
 import { regions } from "@wdol/shared";
+import { status as StatusColors } from "$lib";
 import type { PageServerLoad } from "./$types";
 import { error, redirect } from "@sveltejs/kit";
 import type { ColoTo, WorkerColo } from "@wdol/types";
@@ -23,11 +24,10 @@ export const load: PageServerLoad = async ({ depends, params, locals }) => {
 			colo: {
 				name: iata[coloCode],
 				code: coloCode,
-				status: status[status[coloCode].status]
+				status: StatusColors[status[coloCode].status]
 			},
 		};
 	}
-	// const consumers: Record<WorkerColo, true> = {}; 
 	const related = new Set<WorkerColo>();
 	const connections: [WorkerColo, WorkerColo][] = [];
 	related.add(coloCode);
@@ -73,7 +73,7 @@ export const load: PageServerLoad = async ({ depends, params, locals }) => {
 		colo: {
 			name: iata[coloCode],
 			code: coloCode,
-			status: status[status[coloCode].status]
+			status: StatusColors[status[coloCode].status]
 		},
 		regions: region.latency[coloCode].map(e => ({ name: regions[e.code], ...e })),
 		spawnsHere,
