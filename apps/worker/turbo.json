@@ -3,11 +3,12 @@
 	"extends": ["//"],	
 	"pipeline": {
 		"dev": {
+			"outputMode": "errors-only"
 		},
-		"bindings": {
-			"outputMode": "errors-only",
-			"cache": false,
-			"persistent": true
+		"check": {
+			"inputs": ["src/**/*.ts", "types/**/*.d.ts"],
+			"outputs": ["src/**/*.ts", "types/**/*.d.ts"],
+			"outputMode": "errors-only"
 		}
 	}
 }

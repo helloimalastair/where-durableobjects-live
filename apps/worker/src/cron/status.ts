@@ -52,7 +52,7 @@ export default async function(env: Environment): Promise<{ status: StatusField, 
 			status[colo].isDOCapable = true;
 		}
 	}
-	return {status, iata: Object.entries(status).reduce((acc, [iata, { name }]) => {
+	return {status, iata: Object.entries(status).sort((a, b) => a[1].name.localeCompare(b[1].name)).reduce((acc, [iata, { name }]) => {
 		acc[iata] = name;
 		return acc;
 	}, {} as IATAField)};

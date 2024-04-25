@@ -21,7 +21,7 @@ export default async function(env: Environment): Promise<ColoField> {
 	const from: ColoFrom = {};
 	const to: ColoTo = {};
 	for(const colo of Object.keys(clean)) {
-		let total = Object.values(clean[colo]).reduce((a, b) => a + b.count, 0);
+		const total = Object.values(clean[colo]).reduce((a, b) => a + b.count, 0);
 		for(const [durable, { count }] of Object.entries(clean[colo])) {
 			clean[colo][durable].count = Math.floor(count / total * 1e4) / 100;
 			if(!from[durable]) {
@@ -40,7 +40,6 @@ export default async function(env: Environment): Promise<ColoField> {
 			return b.likelihood - a.likelihood;
 		});
 	}
-	// await env.KV.put("colo", JSON.stringify({ from, to }));
 	return {
 		from,
 		to

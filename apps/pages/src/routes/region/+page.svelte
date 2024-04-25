@@ -1,17 +1,12 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
-	import { regions } from "@wdol/shared";
-  import { Anchor, Head } from "$components";
+import { Anchor, Head, BackButton } from "$components";
+import { regions } from "@wdol/shared";
 </script>
-<Head title="Regions | Where Durable Objects Live" />
+<Head title="Regions" />
 <header>
 	<h1 class="font-bold text-5xl">Regions</h1>
 	<Anchor target="/" internal={true} class="italic text-2xl mb-5">Where Durable Objects Live</Anchor>
-	{#if browser && window.history.state["sveltekit:index"]}
-		<div>
-			<button class="text-xl font-bold" on:click={() => window.history.back()}>← Back</button>
-		</div>
-	{/if}
+	<BackButton />
 </header>
 <p class="text-xl">
 	Regions are a way to spawn a Durable Object in a specific geographic location. This can be useful for reducing latency for users in a specific area.

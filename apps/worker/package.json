@@ -3,14 +3,18 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "lint": "biome check --apply .",
     "dev": "wrangler dev -j",
-		"deploy": "wrangler deploy -j",
-    "bindings": "cf-bindings-proxy --kv KV=9a9dd89eb5d5488cb95282bcbee03ddb"
+    "deploy": "wrangler deploy -j"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240423.0",
+    "@wdol/shared": "workspace:*",
+    "@wdol/types": "workspace:*"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20240329.0",
-    "wrangler": "3.41.0",
-    "@wdol/types": "workspace:*",
-    "geojson": "^0.5.0"
+    "@wdol/iata": "workspace:*",
+    "geojson": "^0.5.0",
+    "wrangler": "0.0.0-906c39a3"
   }
 }

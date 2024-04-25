@@ -14,8 +14,8 @@ type RegionLatency = {
 	}[];
 };
 /*
-	* Represents the likelihood of a Durable Object colo serving traffic for a given region.
-	*/
+ * Represents the likelihood of a Durable Object colo serving traffic for a given region.
+ */
 type RegionField = {
 	hosts: RegionHosts;
 	latency: RegionLatency;

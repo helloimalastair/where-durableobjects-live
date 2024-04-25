@@ -1,8 +1,8 @@
 import type { MapState } from "$lib";
 import { error } from "@sveltejs/kit";
+import { type Region, regions } from "@wdol/shared";
+import type { DurableObjectColo, IATA } from "@wdol/types";
 import type { PageServerLoad } from "./$types";
-import { regions, type Region } from "@wdol/shared";
-import type { IATA, DurableObjectColo } from "@wdol/types";
 
 const guard = (key: string): key is Region => key in regions;
 
@@ -24,11 +24,12 @@ export const load: PageServerLoad = async ({ depends, params, locals }) => {
 			code: params.code,
 			name: regions[params.code],
 		},
-		serves: Object.entries(region.hosts[params.code]).map(([durable, likelihood]) => ({
-			code: durable,
-			name: iata[durable],
-			likelihood
-		})).sort((a, b) => b.likelihood - a.likelihood)
-	}
+		serves: Object.entries(region.hosts[params.code])
+			.map(([durable, likelihood]) => ({
+				code: durable,
+				name: iata[durable],
+				likelihood,
+			}))
+			.sort((a, b) => b.likelihood - a.likelihood),
+	};
 };
-

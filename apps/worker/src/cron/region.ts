@@ -1,4 +1,4 @@
-import { Region } from "@wdol/shared";
+import type { Region } from "@wdol/shared";
 import { analyticsEngineQuery } from "./utils";
 import type { RegionSQLResponse, RegionLatencySQLResponse, RegionLatency, RegionField, RegionHosts, WorkerColo } from "@wdol/types";
 
@@ -22,7 +22,7 @@ export default async function(env: Environment): Promise<RegionField> {
 		hosts[region][durable] = count;
 	}
 	for(const region of Object.keys(hosts) as Region[]) {
-		let total = Object.values(hosts[region]).reduce((a, b) => a + b, 0);
+		const total = Object.values(hosts[region]).reduce((a, b) => a + b, 0);
 		for(const [durable, count] of Object.entries(hosts[region])) {
 			hosts[region][durable] = Math.floor(count / total * 1e4) / 100;
 		}

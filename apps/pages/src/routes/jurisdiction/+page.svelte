@@ -1,16 +1,11 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
-  import { Anchor, Head, EU, Congress } from "$components";
+import { Anchor, Congress, EU, Head, BackButton } from "$components";
 </script>
-<Head title="Jurisdictions | Where Durable Objects Live" />
+<Head title="Jurisdictions" />
 <header>
 	<h1 class="font-bold text-5xl">Jurisdictions</h1>
 	<Anchor target="/" internal={true} class="italic text-2xl mb-5">Where Durable Objects Live</Anchor>
-	{#if browser && window.history.state["sveltekit:index"]}
-		<div>
-			<button class="text-xl font-bold" on:click={() => window.history.back()}>← Back</button>
-		</div>
-	{/if}
+	<BackButton />
 </header>
 <p class="text-xl">Jurisdictions are a way to spawn a Durable Object in a specific legal jurisdiction. This can be useful for ensuring that your data is stored in accordance with legal requirements.</p>
 <div class="flex flex-wrap">

@@ -15,6 +15,6 @@ export const load: PageServerLoad = async ({ depends, platform, locals }) => {
 		worker: `${iata[worker]} (${worker})`,
 		durable: `${iata[durable]} (${durable})`,
 		coverage: frontpage.coverage,
-		hourly: frontpage.hourly
+		hourly: frontpage.hourly,
 	};
 };

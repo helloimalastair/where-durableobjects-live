@@ -1,26 +1,23 @@
 <script lang="ts">
+import { Anchor, Congress, EU, Head, BackButton } from "$components";
+import type { PageData } from "./$types";
 
-	import { browser } from "$app/environment";
-	import { EU, Anchor, Congress, Head } from "$components";
+export let data: PageData;
+let extraColosShown = false;
 
-	export let data;
-	let extraColosShown = false;
-	
-	const showExtraColo = () => extraColosShown = !extraColosShown;
+const showExtraColo = () => {
+	extraColosShown = !extraColosShown;
+};
 </script>
-<Head title={data.colo.name + "(colo) | Where Durable Objects Live"} />
+<Head title={data.colo.name + " (colo)"} />
 <header>
 	<h1 class="font-bold text-5xl">{data.colo.name} ({data.colo.code})</h1>
 	<Anchor target="/" internal={true} class="italic text-2xl mb-5">Where Durable Objects Live</Anchor>
-	{#if browser && window.history.state["sveltekit:index"]}
-		<div>
-			<button class="text-xl font-bold" on:click={() => window.history.back()}>← Back</button>
-		</div>
-	{/if}
+	<BackButton />
 </header>
 <p class="text-xl">Status: <span class={"px-3 rounded-3xl text-xl text-white whitespace-nowrap w-fit " + data.colo.status.color}>{data.colo.status.name}</span></p>
+<p class="text-xl">Does this colo host Durable Objects? <span class="font-bold">{ data.spawnsHere ? "Yes" : "No"}</span></p>
 {#if data.dataAvailable}
-	<p class="text-xl">Does this colo host Durable Objects? <span class="font-bold">{ data.spawnsHere ? "Yes" : "No"}</span></p>
 	{#if data.spawnsHere}
 		{#if data.spawnsHere.regions || data.spawnsHere.jurisdiction}
 			<p class="text-xl">Durable objects spawned here are within the 

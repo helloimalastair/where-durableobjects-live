@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
-	import { page } from "$app/stores";
-	import { Anchor, Head } from "$components";
+import { page } from "$app/stores";
+import { Anchor, Head, BackButton } from "$components";
 </script>
 
 {#if $page.status === 404}
@@ -9,11 +8,7 @@
 <header>
 	<h1 class="font-bold text-5xl">Starlink (STLNK)</h1>
 	<Anchor target="/" internal={true} class="italic text-2xl mb-5">Where Durable Objects Live</Anchor>
-	{#if browser && window.history.state["sveltekit:index"]}
-		<div>
-			<button class="text-xl font-bold" on:click={() => window.history.back()}>← Back</button>
-		</div>
-	{/if}
+	<BackButton />
 </header>
 <p class="text-xl">You found the mythical Starlink Colo!</p>
 <p class="text-xl mt-5">Just kidding. Unfortunately, the page you requested was not found. Check your URL, check back later, and if all else fails, come visit us in <Anchor class="text-sky-500 hover:text-sky-300" target="https://discord.gg/cloudflaredev">the Discord</Anchor>!</p>
@@ -22,11 +17,7 @@
 <header>
 	<h1 class="font-bold text-5xl">Lumpy Cookies (YUM)</h1>
 	<Anchor target="/" internal={true} class="italic text-2xl mb-5">Where Durable Objects Live</Anchor>
-	{#if window.history.state["sveltekit:index"]}
-		<div>
-			<button class="text-xl font-bold" on:click={() => window.history.back()}>← Back</button>
-		</div>
-	{/if}
+	<BackButton />
 </header>
 <p class="text-xl">We love our lumpy, misshapen cookies here at <span class="italic">WDOL</span>. Unfortunately, the URL you provided doesn't match the format we require. Check your URL, and try again!</p>
 {:else if $page.status === 500}
@@ -34,11 +25,7 @@
 <header>
 	<h1 class="font-bold text-5xl">Oops (BLEP)</h1>
 	<Anchor target="/" internal={true} class="italic text-2xl mb-5">Where Durable Objects Live</Anchor>
-	{#if window.history.state["sveltekit:index"]}
-		<div>
-			<button class="text-xl font-bold" on:click={() => window.history.back()}>← Back</button>
-		</div>
-	{/if}
+	<BackButton />
 </header>
 <p class="text-xl">Our Data Doggos have been acting up! Unfortunately we have experienced an internal error, so we aren't able to display the page you requested. The page should be back within a minute or two.</p>
 <p class="text-xl">If the problem persists, please raise an issue in our Discord!</p>

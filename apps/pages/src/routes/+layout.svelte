@@ -1,49 +1,54 @@
 <script lang="ts">
-  import "../app.css";
-	import { onMount } from "svelte";
- 	import { MapManager, type MapState } from "$lib";
-	import { page } from "$app/stores";
-	import "mapbox-gl/dist/mapbox-gl.css";
-	import { invalidate } from "$app/navigation";
-	import { MapIcon, MediaQuery, Spreadsheet } from "$components";
+import { invalidate } from "$app/navigation";
+import { page } from "$app/stores";
+import { MapIcon, MediaQuery, Spreadsheet } from "$components";
+import { MapManager, type MapState } from "$lib";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { onMount } from "svelte";
+import "../app.css";
+import type { PageData } from "./$types";
 
-	export let data;
-	let map: MapManager;
-	let container: HTMLDivElement;
-	let mapShown = false;
-	let highlightDOs: boolean;
-	let legendShown: boolean;
-	let mapLoaded = false;
-	const showMap = () => mapShown = !mapShown;
-	const format = (date: number) => new Intl.DateTimeFormat("en-GB", {
+export let data: PageData;
+let map: MapManager;
+let container: HTMLDivElement;
+let mapShown = false;
+let highlightDOs: boolean;
+let legendShown: boolean;
+let mapLoaded = false;
+const showMap = () => {
+	mapShown = !mapShown;
+};
+const format = (date: number) =>
+	new Intl.DateTimeFormat("en-GB", {
 		dateStyle: "full",
 		timeStyle: "long",
 		timeZone: "utc",
 	}).format(date);
-	const flyTo = (state: MapState) => {
-		map && map.flyTo(data.colos, state)
-	};
+const flyTo = (state: MapState) => map?.flyTo(data.colos, state);
 
-	$: {
-		if(map) {
-			if(!$page.data.map && highlightDOs) {
-				map.render(data.colos, {
-					highlightDOs: true,
-				});
-			} else {
-				map.render(data.colos, $page.data.map);
-			}
+$: {
+	if (map) {
+		if (!$page.data.map && highlightDOs) {
+			map.render(data.colos, {
+				highlightDOs: true,
+			});
+		} else {
+			map.render(data.colos, $page.data.map);
 		}
 	}
-	$: flyTo($page.data.map);
+}
 
-  onMount(() => {
-		map = new MapManager(container, () => mapLoaded = true);
-		map.render(data.colos, $page.data.map);
-		flyTo($page.data.map);
-		const interval = setInterval(() => invalidate("data:update"), 6e4);
-		return () => clearInterval(interval);
-  });
+$: flyTo($page.data.map);
+
+onMount(() => {
+	map = new MapManager(container, () => {
+		mapLoaded = true;
+	});
+	map.render(data.colos, $page.data.map);
+	flyTo($page.data.map);
+	const interval = setInterval(() => invalidate("data:update"), 6e4);
+	return () => clearInterval(interval);
+});
 </script>
 
 <div class={`w-screen md:w-[50vw] ${mapShown ? "h-0" : "h-screen px-10 pt-10"} md:h-screen md:px-20 md:pt-20 overflow-auto`}>

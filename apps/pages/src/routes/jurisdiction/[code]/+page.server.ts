@@ -1,8 +1,8 @@
 import type { MapState } from "$lib";
 import { error } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
+import { type Jurisdiction, jurisdictions } from "@wdol/shared";
 import type { DurableObjectColo, IATA } from "@wdol/types";
-import { jurisdictions, type Jurisdiction } from "@wdol/shared";
+import type { PageServerLoad } from "./$types";
 
 const guard = (key: string): key is Jurisdiction => key in jurisdictions;
 
@@ -24,11 +24,12 @@ export const load: PageServerLoad = async ({ depends, params, locals }) => {
 			code: params.code,
 			name: jurisdictions[params.code],
 		},
-		serves: Object.entries(jurisdiction[params.code]).map(([durable, count]) => ({
-			code: durable,
-			name: iata[durable],
-			count
-		}))
+		serves: Object.entries(jurisdiction[params.code]).map(
+			([durable, count]) => ({
+				code: durable,
+				name: iata[durable],
+				count,
+			}),
+		),
 	};
 };
-

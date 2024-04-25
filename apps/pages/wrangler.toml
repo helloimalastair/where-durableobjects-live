@@ -1,0 +1,16 @@
+name = "wdol"
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+[durable_objects]
+bindings = [
+	{ name = "DO", class_name = "DO", script_name = "where-durableobjects-live" }
+]
+
+[[kv_namespaces]]
+binding = "KV"
+id = "9a9dd89eb5d5488cb95282bcbee03ddb"
+preview_id = "9a9dd89eb5d5488cb95282bcbee03ddb"
+
+[[analytics_engine_datasets]]
+binding = "AE"
+dataset = "WDL"

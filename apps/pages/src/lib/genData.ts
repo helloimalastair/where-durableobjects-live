@@ -1,5 +1,10 @@
+import {
+	type Jurisdiction,
+	type Region,
+	jurisdictions,
+	regions,
+} from "@wdol/shared";
 import type { DurableObjectColo } from "@wdol/types";
-import { regions, type Region, jurisdictions, type Jurisdiction } from "@wdol/shared";
 
 const URL = "http://wdl";
 
@@ -9,42 +14,60 @@ interface DOJSON {
 }
 
 export async function genData(platform: Readonly<App.Platform> | undefined) {
-	if(!platform || !platform.env || !platform.context || !platform.cf) {
+	if (!platform || !platform.cf || !platform.context) {
 		return;
 	}
-	const { env: { DO, AE }, cf: { city, colo: worker }, context } = platform;
+	const {
+		env: { DO, AE },
+		cf: { city, colo: worker },
+		context,
+	} = platform;
 	const start = Date.now();
-	const { ts, colo: durable } = await (await DO.get(DO.newUniqueId()).fetch(URL)).json<DOJSON>();
-	AE.writeDataPoint({
-		blobs: [worker],
-		doubles: [ts - start],
-		indexes: [durable],
-	});
-	context.waitUntil((async () => {
-		// Region testing
-		for(const region of Object.keys(regions) as Region[]) {
-			const start = Date.now();
-			const { ts, colo: durable } = await (await DO.get(DO.newUniqueId(), {
-				locationHint: region
-			}).fetch(URL)).json<DOJSON>();
-			AE.writeDataPoint({
-				blobs: [worker, region],
-				doubles: [ts - start],
-				indexes: [durable],
-			});
-		}
-		// Jurisdiction testing
-		for(const jurisdictionName of Object.keys(jurisdictions) as Jurisdiction[]) {
-			const start = Date.now();
-			const jurisdiction = DO.jurisdiction(jurisdictionName);
-			const { ts, colo: durable } = await (await jurisdiction.get(jurisdiction.newUniqueId()).fetch(URL)).json<DOJSON>();
-			AE.writeDataPoint({
-				blobs: [worker, "", jurisdictionName],
-				doubles: [ts - start],
-				indexes: [durable],
-			});
-		}
-	})());
+	const text = await (
+		await DO.get(DO.newUniqueId()).fetch(URL)
+	).text();
+	console.log(text);
+	const { ts, colo: durable } = JSON.parse(text) as DOJSON;
+	if(AE) {
+		AE.writeDataPoint({
+			blobs: [worker],
+			doubles: [ts - start],
+			indexes: [durable],
+		});
+		context.waitUntil(
+			(async () => {
+				// Region testing
+				for (const region of Object.keys(regions) as Region[]) {
+					const start = Date.now();
+					const { ts, colo: durable } = await (
+						await DO.get(DO.newUniqueId(), {
+							locationHint: region,
+						}).fetch(URL)
+					).json<DOJSON>();
+					AE.writeDataPoint({
+						blobs: [worker, region],
+						doubles: [ts - start],
+						indexes: [durable],
+					});
+				}
+				// Jurisdiction testing
+				for (const jurisdictionName of Object.keys(
+					jurisdictions,
+				) as Jurisdiction[]) {
+					const start = Date.now();
+					const jurisdiction = DO.jurisdiction(jurisdictionName);
+					const { ts, colo: durable } = await (
+						await jurisdiction.get(jurisdiction.newUniqueId()).fetch(URL)
+					).json<DOJSON>();
+					AE.writeDataPoint({
+						blobs: [worker, "", jurisdictionName],
+						doubles: [ts - start],
+						indexes: [durable],
+					});
+				}
+			})(),
+		);
+	}
 	return {
 		city: city as string,
 		worker,

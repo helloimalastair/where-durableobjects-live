@@ -1,13 +1,17 @@
 interface CoverageSQLResponse {
-	data: [{
-		coverage: number,
-	}]
+	data: [
+		{
+			coverage: number;
+		},
+	];
 }
 
 interface HourlySQLResponse {
-	data: [{
-		hourly: number,
-	}]
+	data: [
+		{
+			hourly: number;
+		},
+	];
 }
 
 export type { CoverageSQLResponse, HourlySQLResponse };

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { page } from "$app/stores";
-	export let title = "Where Durable Objects Live";
-	const customTitle = title !== "Where Durable Objects Live";
-	const cleanUrl = $page.url.origin + $page.url.pathname;
-	const image = $page.url.origin + "/globe.png";
+import { page } from "$app/stores";
+export let title: string ;
+const customTitle = title !== "Where Durable Objects Live";
+const cleanUrl = $page.url.origin + $page.url.pathname;
+const image = `${$page.url.origin}/globe.png`;
 </script>
 
 <svelte:head>

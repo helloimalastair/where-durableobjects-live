@@ -1,7 +1,20 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-	"extends": ["//"],	
+	"$schema": "https://turbo.build/schema.json",
+	"extends": ["//"],
 	"pipeline": {
-		"dev": {}
+		"dev": {},
+		"check:biome": {
+			"inputs": ["src/**/*.ts", "types/**/*.d.ts"],
+			"outputs": ["src/**/*.ts", "types/**/*.d.ts"],
+			"outputMode": "errors-only"
+		},
+		"check:types": {
+			"inputs": ["src/**/*.ts", "types/**/*.d.ts"],
+			"outputs": ["src/**/*.ts", "types/**/*.d.ts"],
+			"outputMode": "errors-only"
+		},
+		"check": {
+			"dependsOn": ["check:biome", "check:types"]
+		}
 	}
 }

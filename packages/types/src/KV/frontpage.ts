@@ -1,4 +1,4 @@
 export interface FrontpageField {
-	coverage: number,
-	hourly: number,
-};
+	coverage: number;
+	hourly: number;
+}

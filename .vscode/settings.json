@@ -2,7 +2,7 @@
 	"files.exclude": {
 		"**/.*ignore": true,
 		"**/.*rc": true,
-		"**/bun.lockb": true,
+		"**/pnpm-*.yaml": true,
 		"**/postcss.config.js": true,
 		"apps/pages/vite.config.ts*": true
 	},
@@ -10,5 +10,6 @@
 	"explorer.fileNesting.patterns": {
 		"package.json": "tsconfig.json, tsconfig.*.json",
 		"svelte.config.js": "vite.config.ts, tailwind.config.ts, postcss.config.ts",
-	}
+	},
+	"editor.defaultFormatter": "biomejs.biome"
 }

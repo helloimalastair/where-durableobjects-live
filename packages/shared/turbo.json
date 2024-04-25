@@ -1,0 +1,11 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+	"extends": ["//"],	
+	"pipeline": {
+		"check": {
+			"inputs": ["src/**/*.ts"],
+			"outputs": ["src/**/*.ts"],
+			"outputMode": "errors-only"
+		}
+	}
+}

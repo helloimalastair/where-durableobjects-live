@@ -1,18 +1,14 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
-  import { Anchor, Head } from "$components";
+import { Anchor, Head, BackButton } from "$components";
+import type { PageData } from "./$types";
 
-	export let data;
+export let data: PageData;
 </script>
-<Head title={data.region.name + "(region) | Where Durable Objects Live"} />
+<Head title={data.region.name + " (region)"} />
 <header>
 	<h1 class="font-bold text-5xl">{data.region.name} ({data.region.code})</h1>
 	<Anchor target="/" internal={true} class="italic text-2xl mb-5">Where Durable Objects Live</Anchor>
-	{#if browser && window.history.state["sveltekit:index"]}
-		<div>
-			<button class="text-xl font-bold" on:click={() => window.history.back()}>← Back</button>
-		</div>
-	{/if}
+	<BackButton />
 </header>
 {#if data.serves}
 	<p class="text-xl">When you ask for a Durable Object in this region, it can spawn in:</p>

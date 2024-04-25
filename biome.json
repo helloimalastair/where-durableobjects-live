@@ -1,0 +1,35 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.7.1/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	},
+	"vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+	"overrides": [
+		{
+			"include": ["src/**/*.svelte"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedLabels": "off"
+					},
+					"suspicious": {
+						"noConfusingLabels": "off"
+					},
+					"style": {
+						"useConst": "off"
+					}
+				}
+			}
+		}
+	]
+}

@@ -1,4 +1,4 @@
-import { Jurisdiction } from "@wdol/shared";
+import type { Jurisdiction } from "@wdol/shared";
 import { analyticsEngineQuery } from "./utils";
 import type { JurisdictionSQLResponse, JurisdictionField } from "@wdol/types";
 
@@ -14,7 +14,7 @@ export default async function(env: Environment): Promise<JurisdictionField> {
 		clean[jurisdiction][durable] = count;
 	}
 	for(const jurisdiction of Object.keys(clean) as Jurisdiction[]) {
-		let total = Object.values(clean[jurisdiction]).reduce((a, b) => a + b, 0);
+		const total = Object.values(clean[jurisdiction]).reduce((a, b) => a + b, 0);
 		for(const [durable, count] of Object.entries(clean[jurisdiction])) {
 			clean[jurisdiction][durable] = Math.floor(count / total * 1e4) / 100;
 		}

@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Anchor, Head } from "$components";
+import { Anchor, Head } from "$components";
+import type { PageData } from "./$types";
 
-	export let data;
+export let data: PageData;
 </script>
 <Head />
 <header>

@@ -1,16 +1,11 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
-  import { Anchor, Head } from "$components";
+import { Anchor, Head, BackButton } from "$components";
 </script>
-<Head title="API | Where Durable Objects Live" />
+<Head title="API" />
 <header>
 	<h1 class="font-bold text-5xl">API</h1>
 	<Anchor target="/" internal={true} class="italic text-2xl mb-5">Where Durable Objects Live</Anchor>
-	{#if browser && window.history.state["sveltekit:index"]}
-		<div>
-			<button class="text-xl font-bold" on:click={() => window.history.back()}>← Back</button>
-		</div>
-	{/if}
+	<BackButton />
 </header>
 <p class="text-xl">
 	The WDOL API remains as it was previously, for now. There are two endpoints:

@@ -1,7 +1,7 @@
 import { parse } from "papaparse";
-import { IATA } from "@wdol/types";
 import getRegions from "./regions";
 import getCountries from "./countries";
+import type { IATA } from "@wdol/types";
 import addMissingAirports from "./polyfills";
 
 const regions = await getRegions();
@@ -34,10 +34,10 @@ export type { clean };
 
 for(const result of data) {
 	if(!result.iata_code) continue;
-	let name = result.municipality + ", ";
+	let name = `${result.municipality}, `;
 	const region = regions[result.iso_region];
 	if(region){
-		name += region + ", ";
+		name += `${region}, `;
 	} else if(!/[A-Z]{2}-U-A/.test(result.iso_region)) {
 		throw new Error(`Region not found: ${result.iso_region}`);
 	}
@@ -45,8 +45,8 @@ for(const result of data) {
 	
 	clean[result.iata_code] = {
 		name,
-		latitude: parseFloat(result.latitude_deg),
-		longitude: parseFloat(result.longitude_deg),
+		latitude: Number.parseFloat(result.latitude_deg),
+		longitude: Number.parseFloat(result.longitude_deg),
 	};
 }
 addMissingAirports(clean);

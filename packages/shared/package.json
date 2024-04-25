@@ -1,5 +1,8 @@
 {
 	"name": "@wdol/shared",
 	"private": true,
+	"scripts": {
+		"lint": "biome check --apply ."
+	},
   "main": "src/index.ts"
 }
