@@ -15,6 +15,9 @@ export const load: PageServerLoad = async ({ depends, params, locals }) => {
 		throw error(400, "Invalid colo format");
 	}
 	const { colo, region, iata, status, jurisdiction } = await locals.getLive();
+	if(!iata[coloCode]) {
+		throw error(404, "Not found");
+	}
 	if (!colo.to[coloCode]) {
 		return {
 			map: {

@@ -16,4 +16,14 @@ export default function addMissingAirports(cleaned: typeof clean) {
 		latitude: 37.77702296281929,
 		longitude: -122.42400224646045,
 	};
+	cleaned.QWJ = {
+		name: "Americana, São Paulo, Brazil",
+		latitude: -22.755917,
+		longitude: -47.269408
+	};
+	cleaned.JXG = {
+		name: "Jiaxing, Zhejiang, China",
+		latitude: 30.76341423925632,
+		longitude: 120.75557057437169
+	};
 }

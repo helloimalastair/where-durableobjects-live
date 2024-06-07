@@ -39,12 +39,16 @@ export default async function(env: Environment): Promise<{ status: StatusField, 
 	for(const { colo } of workerColos) {
 		if(!status[colo]) {
 			const airport = iata[colo];
-			status[colo] = {
-				name: airport.name,
-				coords: [airport.longitude, airport.latitude],
-				status: "unknown",
-				isDOCapable: false,
-			};
+			try {
+				status[colo] = {
+					name: airport.name,
+					coords: [airport.longitude, airport.latitude],
+					status: "unknown",
+					isDOCapable: false,
+				};
+			} catch(e) {
+				console.error(`Failed to find IATA code ${colo}`);
+			}
 		}
 	}
 	for(const { colo } of doColos) {
