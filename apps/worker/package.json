@@ -8,13 +8,11 @@
     "deploy": "wrangler deploy -j"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240605.0",
     "@wdol/shared": "workspace:*",
     "@wdol/types": "workspace:*"
   },
   "dependencies": {
     "@wdol/iata": "workspace:*",
-    "geojson": "^0.5.0",
-    "wrangler": "3.59.0"
+    "geojson": "^0.5.0"
   }
 }

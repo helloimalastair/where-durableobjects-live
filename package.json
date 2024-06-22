@@ -3,10 +3,12 @@
   "private": true,
   "devDependencies": {
     "@biomejs/biome": "1.7.1",
-    "turbo": "^1.11.3"
+    "turbo": "^1.11.3",
+    "@cloudflare/workers-types": "^4.20240620.0",
+    "wrangler": "^3.61.0"
   },
   "scripts": {
     "dev": "turbo dev",
-		"check": "turbo check"
+    "check": "turbo check"
   }
 }

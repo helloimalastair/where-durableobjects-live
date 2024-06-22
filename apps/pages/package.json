@@ -10,7 +10,6 @@
 		"deploy": "wrangler pages deploy --branch production .svelte-kit/cloudflare"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20240423.0",
 		"@sveltejs/adapter-cloudflare": "^4.4.0",
 		"@sveltejs/kit": "^2.5.7",
 		"@types/geojson": "^7946.0.14",
@@ -24,8 +23,7 @@
 		"tailwindcss": "^3.4.3",
 		"tslib": "^2.6.2",
 		"typescript": "^5.4.5",
-		"vite": "^5.2.10",
-		"wrangler": "0.0.0-906c39a3"
+		"vite": "^5.2.10"
 	},
 	"type": "module",
 	"dependencies": {
