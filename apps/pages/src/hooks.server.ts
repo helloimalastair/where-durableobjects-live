@@ -4,6 +4,7 @@ import { Mutex } from "async-mutex";
 import { Axiom } from "@axiomhq/js";
 
 const handle: Handle = async ({ event, resolve }) => {
+	console.log("Running server hook. Does platform exist?", !!event.platform);
 	if (event.platform?.env) {
 		event.platform.env.AXIOM = new Axiom({
 			token: event.platform.env.AXIOM_TOKEN,
@@ -33,6 +34,7 @@ const handle: Handle = async ({ event, resolve }) => {
 
 const handleError: HandleServerError = async ({ error, event: { platform }, message }) => {
 	if(!(platform?.cf && platform.context)) {
+		console.error(error);
 		return console.error("No platform/CF :(");
 	}
 	const { AXIOM, AXIOM_DATASET } = platform.env;

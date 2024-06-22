@@ -23,3 +23,5 @@ const navigateToColo = async () => {
 <p class="text-xl">You can use the selector below to see more information about individual colos, their status, and what kind of traffic they serve/generate.</p>
 
 <MultiSelect maxSelect={1} on:add={navigateToColo} bind:selected options={Object.keys(data.colos)} />
+
+<Anchor target="/colo/all" internal={true} class="underline text-xl">Click here to see all colos at once</Anchor>
