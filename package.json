@@ -2,10 +2,10 @@
   "name": "@wdol/monorepo",
   "private": true,
   "devDependencies": {
-    "@biomejs/biome": "1.7.1",
-    "turbo": "^1.11.3",
+    "@biomejs/biome": "1.8.3",
+    "turbo": "^2.0.6",
     "@cloudflare/workers-types": "^4.20240620.0",
-    "wrangler": "^3.61.0"
+    "wrangler": "^3.62.0"
   },
   "scripts": {
     "dev": "turbo dev",
