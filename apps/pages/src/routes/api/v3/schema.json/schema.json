@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://where.durableobjects.live/api/v3/schema.json",
+  "title": "WhereDurableObjectsLive JSON API v3",
+  "description": "This schema covers the v3 API ONLY.",
+  "type": "object",
+  "properties": {
+    "hourly": {
+      "type": "number",
+			"minimum": 0,
+      "description": "How many Durable Objects have been spawned in the last hour to power WDOL."
+    },
+    "coverage": {
+      "type": "number",
+			"minimum": 0,
+			"maximum": 1,
+      "description": "Percentage of Cloudflare Colos that support hosting Durable Objects, out of 1."
+    },
+    "colos": {
+      "description": "Colos in the Cloudflare Network. All colo ids(except special colos) match IATA code specifications.",
+      "patternProperties": {
+        "^[A-Z]{3}(?:-[A-Z]{3})?$": {
+          "type": "object",
+          "properties": {
+            "hosts": {
+              "type": "object",
+              "patternProperties": {
+                "^[A-Z]{3}$": {
+                  "type": "object",
+                  "properties": {
+                    "likelihood": {
+                      "type": "number",
+											"minimum": 0,
+											"maximum": 1,
+                      "description": "Likelihood that a Durable Object will spawn here if requested from the given Worker colo, out of 1."
+                    },
+                    "latency": {
+                      "type": "number",
+											"minimum": 0,
+                      "description": "Latency in milliseconds from the given Worker colo to this Durable Object colo."
+                    }
+                  },
+									"required": ["likelihood", "latency"]
+                }
+              },
+              "description": "Colos that can host Durable Objects when requested from the given Worker colo."
+            },
+            "nearestRegion": {
+              "enum": ["wnam", "enam", "sam", "weur", "eeur", "apac", "oc", "afr", "me"],
+              "description": "Region with the lowest latency to the selected colo. Region may not be the closest geographically."
+            }
+          },
+          "required": ["hosts", "nearestRegion"]
+        }
+      }
+    }
+  },
+  "required": [
+    "hourly",
+    "coverage",
+    "colos"
+  ]
+}

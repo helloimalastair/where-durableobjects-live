@@ -1,4 +1,6 @@
-export class DO {
+import { DurableObject } from "cloudflare:workers";
+
+export class DO extends DurableObject {
 	async fetch() {
 		return Response.json({
 			ts: Date.now(),

@@ -11,7 +11,7 @@ import { Anchor, Head, BackButton } from "$components";
 	<BackButton />
 </header>
 <p class="text-xl">You found the mythical Starlink Colo!</p>
-<p class="text-xl mt-5">Just kidding. Unfortunately, the page you requested was not found. Check your URL, check back later, and if all else fails, come visit us in <Anchor class="text-sky-500 hover:text-sky-300" target="https://discord.gg/cloudflaredev">the Discord</Anchor>!</p>
+<p class="text-xl mt-5">Just kidding. Unfortunately, the page you requested was not found. Check your URL, check back later, and if all else fails, come visit us in our <Anchor class="text-sky-500 hover:text-sky-300" target="/discord">Discord Server</Anchor>!</p>
 {:else if $page.status === 400}
 <Head title="Malformed Request" />
 <header>
@@ -28,5 +28,5 @@ import { Anchor, Head, BackButton } from "$components";
 	<BackButton />
 </header>
 <p class="text-xl">Our Data Doggos have been acting up! Unfortunately we have experienced an internal error, so we aren't able to display the page you requested. The page should be back within a minute or two.</p>
-<p class="text-xl">If the problem persists, please raise an issue in our Discord!</p>
+<p class="text-xl">If the problem persists, please raise an issue in our <Anchor target="/discord" internal={true} class="italic text-2xl mb-5">Discord Server</Anchor>!</p>
 {/if}

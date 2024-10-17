@@ -1,9 +1,19 @@
 import { error } from "@sveltejs/kit";
+import { dev } from "$app/environment";
 import type { RequestHandler } from "./$types";
 
-export const GET: RequestHandler = async ({ platform }) => {
+export const GET: RequestHandler = async ({ request, platform }) => {
 	if(!platform) {
 		throw error(500, "Platform not found");
+	}
+	if(!dev && platform.context) {
+		const { AXIOM, AXIOM_DATASET } = platform.env;
+		AXIOM.ingest(AXIOM_DATASET, {
+			api: "v2",
+			ua: request.headers.get("user-agent") ?? undefined,
+			colo: platform.cf?.colo,
+		});
+		platform.context.waitUntil(AXIOM.flush());
 	}
 	return new Response(await platform.env.KV.get("api/v2"), {
 		headers: {
@@ -12,11 +22,4 @@ export const GET: RequestHandler = async ({ platform }) => {
 	});
 };
 
-export const OPTIONS: RequestHandler = () =>
-	new Response(null, {
-		status: 204,
-		headers: {
-			allow: "GET, OPTIONS",
-			"access-control-allow-origin": "*",
-		},
-	});
+export { OPTIONS } from "$lib";

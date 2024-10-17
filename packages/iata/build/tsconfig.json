@@ -1,14 +1,9 @@
 {
+	"extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "lib": ["esnext"],
-    "types": ["bun"],
-    "isolatedModules": true,
-    "noEmit": true,
-    "strict": true,
-    "esModuleInterop": true,
+    "types": ["node"],
+		"noEmit": true,
+		"allowImportingTsExtensions": true
   },
   "include": [
     "*.ts",

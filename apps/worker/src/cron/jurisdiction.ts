@@ -2,7 +2,7 @@ import type { Jurisdiction } from "@wdol/shared";
 import { analyticsEngineQuery } from "./utils";
 import type { JurisdictionSQLResponse, JurisdictionField } from "@wdol/types";
 
-export default async function(env: Environment): Promise<JurisdictionField> {
+export default async function(env: Env): Promise<JurisdictionField> {
 	const { data } = await analyticsEngineQuery<JurisdictionSQLResponse>(
 		"SELECT index1 as durable, blob3 as jurisdiction, COUNT() / 1 as count FROM WDL WHERE timestamp > NOW() - INTERVAL '5' MINUTE AND NOT isEmpty(index1) AND NOT isEmpty(blob3) GROUP BY index1, blob3"
 	, env.API_TOKEN);

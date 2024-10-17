@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "biome check --apply .",
     "dev": "wrangler dev -j --test-scheduled",
-    "deploy": "wrangler deploy -j"
+    "deploy": "wrangler deploy -j --minify",
+		"sync": "wrangler types types/env.d.ts -j --x-include-runtime=types/workerd.d.ts"
   },
   "devDependencies": {
     "@wdol/shared": "workspace:*",

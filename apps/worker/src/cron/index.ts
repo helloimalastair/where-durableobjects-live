@@ -6,7 +6,7 @@ import frontpage from "./frontpage";
 import jurisdiction from "./jurisdiction";
 import type { LiveKV } from "@wdol/types";
 
-const cron: ExportedHandlerScheduledHandler<Environment> = async (event, env, ctx) => {
+const cron: ExportedHandlerScheduledHandler<Env> = async (event, env, ctx) => {
 	const data = await Promise.all([colo(env), frontpage(env), status(env), regions(env), jurisdiction(env)]);
 	const live = {
 		colo: data[0],

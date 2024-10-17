@@ -23,11 +23,9 @@ export async function genData(platform: Readonly<App.Platform> | undefined) {
 		context,
 	} = platform;
 	const start = Date.now();
-	const text = await (
+	const { ts, colo: durable } = await (
 		await DO.get(DO.newUniqueId()).fetch(URL)
-	).text();
-	console.log(text);
-	const { ts, colo: durable } = JSON.parse(text) as DOJSON;
+	).json<DOJSON>();
 	if(AE) {
 		AE.writeDataPoint({
 			blobs: [worker],

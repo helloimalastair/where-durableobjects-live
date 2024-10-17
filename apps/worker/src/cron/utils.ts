@@ -2,7 +2,7 @@ async function analyticsEngineQuery<SQLJSONResponse>(queries: string | string[],
 	if(Array.isArray(queries)) {
 		return await Promise.all(queries.map(query => analyticsEngineQuery(query, API_TOKEN))) as unknown as SQLJSONResponse;
 	}
-	return await (await fetch(
+	const res = await fetch(
 		"https://api.cloudflare.com/client/v4/accounts/864cdf76f8254fb5539425299984d766/analytics_engine/sql",
 		{
 			method: "POST",
@@ -12,7 +12,8 @@ async function analyticsEngineQuery<SQLJSONResponse>(queries: string | string[],
 			},
 			body: queries,
 		},
-	)).json<SQLJSONResponse>();
+	);
+	return res.json<SQLJSONResponse>();
 }
 
 export { analyticsEngineQuery };

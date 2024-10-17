@@ -1,7 +1,7 @@
 import { analyticsEngineQuery } from "./utils";
 import type { ColoField, ColoFrom, ColoTo, ColoSQLResponse } from "@wdol/types";
 
-export default async function(env: Environment): Promise<ColoField> {
+export default async function(env: Env): Promise<ColoField> {
 	const { data } = await analyticsEngineQuery<ColoSQLResponse>(
 		"SELECT index1 as durable, blob1 as colo, COUNT() / 1 as count, intDiv(AVG(double1), 0.01) / 100 as latency FROM WDL WHERE timestamp > NOW() - INTERVAL '5' MINUTE AND NOT isEmpty(index1) AND NOT isEmpty(blob1) AND isEmpty(blob2) AND isEmpty(blob3) GROUP BY index1, blob1"
 	, env.API_TOKEN);

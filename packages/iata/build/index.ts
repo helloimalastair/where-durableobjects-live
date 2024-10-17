@@ -1,8 +1,11 @@
-import { parse } from "papaparse";
-import getRegions from "./regions";
-import getCountries from "./countries";
+import papa from "papaparse";
+import getRegions from "./regions.ts";
 import type { IATA } from "@wdol/types";
-import addMissingAirports from "./polyfills";
+import getCountries from "./countries.ts";
+import addMissingAirports from "./polyfills.ts";
+import { readFileSync, writeFileSync } from "node:fs";
+
+const { parse } = papa;
 
 const regions = await getRegions();
 const countries = await getCountries();
@@ -16,7 +19,7 @@ interface Parsed {
 	iata_code: string,
 }
 
-const raw = await Bun.file("data/airports.csv").text();
+const raw = readFileSync("data/airports.csv", "utf8");
 
 const data = (parse(raw, { header: true, skipEmptyLines: "greedy" })).data as unknown as Parsed[];
 
@@ -50,4 +53,4 @@ for(const result of data) {
 	};
 }
 addMissingAirports(clean);
-Bun.write("src/data.json", JSON.stringify(clean, null, '\t'));
+writeFileSync("src/data.json", JSON.stringify(clean, null, '\t'));

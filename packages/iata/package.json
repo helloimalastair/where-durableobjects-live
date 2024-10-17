@@ -3,14 +3,14 @@
   "private": true,
   "main": "src/index.ts",
   "type": "module",
-	"scripts": {
-		"build": "bun build/index.ts",
-		"lint": "biome check --apply ."
-	},
+  "scripts": {
+    "build": "NODE_NO_WARNINGS=1 node --experimental-strip-types build/index.ts",
+    "lint": "biome check --apply ."
+  },
   "devDependencies": {
-    "@types/bun": "^1.0.11",
+    "@types/node": "^22.7.5",
     "@types/papaparse": "^5.3.14",
-    "papaparse": "^5.4.1",
-		"@wdol/types": "workspace:*"
+    "@wdol/types": "workspace:*",
+    "papaparse": "^5.4.1"
   }
 }

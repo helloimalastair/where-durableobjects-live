@@ -16,7 +16,7 @@ const statusMapping = new Map<string, Status>(Object.entries({
 	under_maintenance: "maintenance",
 }));
 
-export default async function(env: Environment): Promise<{ status: StatusField, iata: IATAField }> {
+export default async function(env: Env): Promise<{ status: StatusField, iata: IATAField }> {
 	const { components } = await (await fetch("https://www.cloudflarestatus.com/api/v2/components.json")).json<StatuspageComponents>();
 	const status: StatusField = {};
 	for(const component of components) {

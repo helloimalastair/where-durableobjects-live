@@ -1,10 +1,13 @@
+import { dev } from '$app/environment';
 import type { HandleServerError, Handle } from "@sveltejs/kit";
 import type { LiveKV } from "@wdol/types";
 import { Mutex } from "async-mutex";
 import { Axiom } from "@axiomhq/js";
 
 const handle: Handle = async ({ event, resolve }) => {
-	console.log("Running server hook. Does platform exist?", !!event.platform);
+	if(dev) {
+		console.log("Running server hook. Does platform exist?", !!event.platform);
+	}
 	if (event.platform?.env) {
 		event.platform.env.AXIOM = new Axiom({
 			token: event.platform.env.AXIOM_TOKEN,
@@ -16,10 +19,12 @@ const handle: Handle = async ({ event, resolve }) => {
 			let data: LiveKV | null;
 			event.locals.getLive = () =>
 				mutex.runExclusive(async () => {
-					if (data) {
+					if (dev && data) {
 						console.log("Using cached...");
 					} else {
-						console.log("Getting fresh...");
+						if(dev) {
+							console.log("Getting fresh...");
+						}
 						data = await KV.get<LiveKV>("live", "json");
 						if (!data) {
 							throw new Error("KV entry not found");
@@ -34,16 +39,23 @@ const handle: Handle = async ({ event, resolve }) => {
 
 const handleError: HandleServerError = async ({ error, event: { platform }, message }) => {
 	if(!(platform?.cf && platform.context)) {
-		console.error(error);
-		return console.error("No platform/CF :(");
+		if(dev) {
+			console.error(error);
+			return console.error("No platform/CF :(");
+		}
+		return;
 	}
-	const { AXIOM, AXIOM_DATASET } = platform.env;
-	AXIOM.ingest(AXIOM_DATASET, {
-		error,
-		message,
-		colo: platform.cf.colo,
-	});
-	platform.context.waitUntil(AXIOM.flush());
+	if(dev) {
+		console.error(error);
+	} else {
+		const { AXIOM, AXIOM_DATASET } = platform.env;
+		AXIOM.ingest(AXIOM_DATASET, {
+			error,
+			message,
+			colo: platform.cf.colo,
+		});
+		platform.context.waitUntil(AXIOM.flush());
+	}
 };
 
 export { handle, handleError };

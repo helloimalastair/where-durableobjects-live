@@ -2,7 +2,7 @@ import type { Region } from "@wdol/shared";
 import { analyticsEngineQuery } from "./utils";
 import type { RegionSQLResponse, RegionLatencySQLResponse, RegionLatency, RegionField, RegionHosts, WorkerColo } from "@wdol/types";
 
-export default async function(env: Environment): Promise<RegionField> {
+export default async function(env: Env): Promise<RegionField> {
 	const [{ data: regionHosts }, { data: latencyRaw }] = await analyticsEngineQuery<[RegionSQLResponse, RegionLatencySQLResponse]>([
 		"SELECT index1 as durable, blob2 as region, COUNT() / 1 as count FROM WDL WHERE timestamp > NOW() - INTERVAL '5' MINUTE AND NOT isEmpty(index1) AND NOT isEmpty(blob2) GROUP BY index1, blob2",
 		"SELECT blob1 as colo, blob2 as region, intDiv(AVG(double1), 0.01) / 100 as latency FROM WDL WHERE timestamp > NOW() - INTERVAL '5' MINUTE AND NOT isEmpty(blob1) AND NOT isEmpty(blob2) GROUP BY blob1, blob2"
