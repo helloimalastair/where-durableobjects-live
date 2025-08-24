@@ -1,16 +1,16 @@
 {
-  "name": "@wdol/iata",
-  "private": true,
-  "main": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "build": "NODE_NO_WARNINGS=1 node --experimental-strip-types build/index.ts",
-    "lint": "biome check --apply ."
-  },
-  "devDependencies": {
-    "@types/node": "^22.7.5",
-    "@types/papaparse": "^5.3.14",
-    "@wdol/types": "workspace:*",
-    "papaparse": "^5.4.1"
-  }
+	"name": "@wdol/iata",
+	"private": true,
+	"main": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"sync": "node build/index.ts",
+		"lint": "biome check --apply ."
+	},
+	"devDependencies": {
+		"@types/node": "^22.7.5",
+		"@types/papaparse": "^5.3.14",
+		"@wdol/types": "workspace:*",
+		"papaparse": "^5.4.1"
+	}
 }

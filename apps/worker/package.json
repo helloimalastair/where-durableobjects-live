@@ -1,19 +1,19 @@
 {
-  "name": "@wdol/worker",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "lint": "biome check --apply .",
-    "dev": "wrangler dev -j --test-scheduled",
-    "deploy": "wrangler deploy -j --minify",
-		"sync": "wrangler types types/env.d.ts -j --x-include-runtime=types/workerd.d.ts"
-  },
-  "devDependencies": {
-    "@wdol/shared": "workspace:*",
-    "@wdol/types": "workspace:*"
-  },
-  "dependencies": {
-    "@wdol/iata": "workspace:*",
-    "geojson": "^0.5.0"
-  }
+	"name": "@wdol/worker",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"lint": "biome check --apply .",
+		"sync": "wrangler types types/worker.d.ts",
+		"dev": "wrangler dev -j --test-scheduled",
+		"deploy": "wrangler deploy -j"
+	},
+	"devDependencies": {
+		"@wdol/shared": "workspace:*",
+		"@wdol/types": "workspace:*"
+	},
+	"dependencies": {
+		"@wdol/iata": "workspace:*",
+		"geojson": "^0.5.0"
+	}
 }

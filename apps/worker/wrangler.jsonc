@@ -1,0 +1,42 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "where-durableobjects-live",
+	"compatibility_date": "2024-01-28",
+	"main": "src/index.ts",
+	"workers_dev": false,
+	"minify": true,
+	"kv_namespaces": [
+		{
+			"binding": "KV",
+			"id": "9a9dd89eb5d5488cb95282bcbee03ddb",
+			"preview_id": "9a9dd89eb5d5488cb95282bcbee03ddb"
+		}
+	],
+	"analytics_engine_datasets": [
+		{
+			"binding": "WDL",
+			"dataset": "WDL"
+		}
+	],
+	"triggers": {
+		"crons": [
+			"*/5 * * * *"
+		]
+	},
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "DO",
+				"class_name": "DO"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "2021-06-09",
+			"new_classes": [
+				"DO"
+			]
+		}
+	]
+}

@@ -3,11 +3,18 @@ import colo from "./colo";
 import status from "./status";
 import regions from "./region";
 import frontpage from "./frontpage";
+import { env } from "cloudflare:workers";
 import jurisdiction from "./jurisdiction";
 import type { LiveKV } from "@wdol/types";
 
-const cron: ExportedHandlerScheduledHandler<Env> = async (event, env, ctx) => {
-	const data = await Promise.all([colo(env), frontpage(env), status(env), regions(env), jurisdiction(env)]);
+const cron: ExportedHandlerScheduledHandler<Env> = async () => {
+	const data = await Promise.all([
+		colo(),
+		frontpage(),
+		status(),
+		regions(),
+		jurisdiction(),
+	]);
 	const live = {
 		colo: data[0],
 		frontpage: data[1],
@@ -17,9 +24,7 @@ const cron: ExportedHandlerScheduledHandler<Env> = async (event, env, ctx) => {
 		jurisdiction: data[4],
 		updatedAt: Date.now(),
 	} as LiveKV;
-	await Promise.all([env.KV.put("live", JSON.stringify(live)),
-		api(live, env)
-	]);
+	await Promise.all([env.KV.put("live", JSON.stringify(live)), api(live)]);
 };
 
 export default cron;

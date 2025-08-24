@@ -2,9 +2,8 @@
   "name": "@wdol/monorepo",
   "private": true,
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
-    "turbo": "^2.1.3",
-    "wrangler": "^3.81.0"
+    "@biomejs/biome": "2.2.2",
+    "wrangler": "4.32.0"
   },
   "scripts": {
     "dev": "turbo dev",

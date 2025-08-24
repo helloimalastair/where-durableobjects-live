@@ -1,7 +1,8 @@
+import { env } from "cloudflare:workers";
 import type { Region } from "@wdol/shared";
 import type { DurableObjectColo, LiveKV, WorkerColo } from "@wdol/types";
 
-export default async function api(live: LiveKV, env: Env) {
+export default async function api(live: LiveKV) {
 	const base = {
 		hourly: live.frontpage.hourly,
 		coverage: Math.floor(live.frontpage.coverage * 100) / 1e4,
@@ -18,14 +19,14 @@ export default async function api(live: LiveKV, env: Env) {
 		}>,
 		nearestRegion: Region,
 	}> = {};
-	for(const [worker, durables] of Object.entries(live.colo.to)) {
+	for (const [worker, durables] of Object.entries(live.colo.to)) {
 		v1[worker] = {};
 		v2[worker] = {};
 		v3[worker] = {
 			hosts: {},
 			nearestRegion: live.region.latency[worker][0].code
 		};
-		for(const durable of durables) {
+		for (const durable of durables) {
 			const likelihood = Math.floor(durable.likelihood * 100) / 1e4;
 			v1[worker][durable.code] = likelihood;
 			v2[worker][durable.code] = {

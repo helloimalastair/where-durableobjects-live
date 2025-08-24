@@ -1,0 +1,4 @@
+[tools]
+node = "24.6.0"
+"npm:npm-check-updates" = "latest"
+pnpm = "10.15.0"

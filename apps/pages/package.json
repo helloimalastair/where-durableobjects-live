@@ -7,8 +7,8 @@
 		"build": "vite build",
 		"check:biome": "biome check --apply .",
 		"check:types": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"deploy": "wrangler pages deploy --branch production .svelte-kit/cloudflare",
-		"sync": "wrangler types types/env.d.ts --x-include-runtime=types/workerd.d.ts"
+		"deploy": "wrangler deploy",
+		"sync": "svelte-kit sync && wrangler types -c ./wrangler.jsonc -c ../worker/wrangler.jsonc types/worker.d.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "^4.7.3",
@@ -28,7 +28,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@axiomhq/js": "1.2.0",
 		"@sveltejs/vite-plugin-svelte": "^3.1.2",
 		"@wdol/iata": "workspace:*",
 		"async-mutex": "^0.5.0",

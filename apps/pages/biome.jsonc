@@ -1,0 +1,13 @@
+{
+	"$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": [
+		"../../biome.json"
+	],
+	"files": {
+		"includes": [
+			"src/**/*.{svelte,ts,css,html}",
+			"!**/.svelte-kit/**",
+			"!types/worker.d.ts"
+		]
+	}
+}

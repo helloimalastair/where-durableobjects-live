@@ -1,0 +1,32 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "wdol",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_date": "2025-05-12",
+	"analytics_engine_datasets": [
+		{
+			"binding": "AE",
+			"dataset": "WDL"
+		}
+	],
+	"assets": {
+		"directory": ".svelte-kit/cloudflare",
+		"binding": "ASSETS"
+	},
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "DO",
+				"class_name": "DO",
+				"script_name": "where-durableobjects-live"
+			}
+		]
+	},
+	"kv_namespaces": [
+		{
+			"binding": "KV",
+			"id": "9a9dd89eb5d5488cb95282bcbee03ddb",
+			"preview_id": "9a9dd89eb5d5488cb95282bcbee03ddb"
+		}
+	]
+}
