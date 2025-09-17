@@ -9,9 +9,9 @@ declare global {
 		}
 		// interface PageData {}
 		interface Platform {
-			// context?: ExecutionContext;
+			context?: ExecutionContext;
 			// caches?: CacheStorage & { default: Cache };
-			// cf?: IncomingRequestCfProperties;
+			cf?: IncomingRequestCfProperties;
 			env: Env
 		}
 	}

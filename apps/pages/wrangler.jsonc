@@ -3,6 +3,11 @@
 	"name": "wdol",
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"compatibility_date": "2025-05-12",
+	"workers_dev": false,
+	"route": {
+		"pattern": "where.durableobjects.live",
+		"custom_domain": true
+	},
 	"analytics_engine_datasets": [
 		{
 			"binding": "AE",

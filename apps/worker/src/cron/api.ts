@@ -17,14 +17,18 @@ export default async function api(live: LiveKV) {
 			likelihood: number,
 			latency: number,
 		}>,
-		nearestRegion: Region,
+		nearestRegion: Region, regions: Record<Region, number>,
 	}> = {};
 	for (const [worker, durables] of Object.entries(live.colo.to)) {
 		v1[worker] = {};
 		v2[worker] = {};
 		v3[worker] = {
 			hosts: {},
-			nearestRegion: live.region.latency[worker][0].code
+			nearestRegion: live.region.latency[worker][0].code,
+			regions: live.region.latency[worker].reduce((acc, region) => {
+				acc[region.code] = region.latency;
+				return acc;
+			}, {} as Record<Region, number>),
 		};
 		for (const durable of durables) {
 			const likelihood = Math.floor(durable.likelihood * 100) / 1e4;

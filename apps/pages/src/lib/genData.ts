@@ -22,11 +22,14 @@ export async function genData(platform: Readonly<App.Platform> | undefined) {
 		cf: { city, colo: worker },
 		context,
 	} = platform;
+	if (worker.length !== 3) {
+		return;
+	}
 	const start = Date.now();
 	const { ts, colo: durable } = await (
 		await DO.get(DO.newUniqueId()).fetch(URL)
 	).json<DOJSON>();
-	if(AE) {
+	if (AE) {
 		AE.writeDataPoint({
 			blobs: [worker],
 			doubles: [ts - start],

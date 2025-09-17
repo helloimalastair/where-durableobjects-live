@@ -11,11 +11,11 @@ export const load: PageServerLoad = async ({ depends, params, locals }) => {
 	if (params.code.match(/[a-z]/g)) {
 		throw redirect(301, `/colo/${params.code.toUpperCase()}`);
 	}
-	if (params.code.length !== 3 && params.code !== "SFO-DOG") {
+	if (params.code.length !== 3) {
 		throw error(400, "Invalid colo format");
 	}
 	const { colo, region, iata, status, jurisdiction } = await locals.getLive();
-	if(!iata[coloCode]) {
+	if (!iata[coloCode]) {
 		throw error(404, "Not found");
 	}
 	if (!colo.to[coloCode]) {
@@ -36,10 +36,10 @@ export const load: PageServerLoad = async ({ depends, params, locals }) => {
 	related.add(coloCode);
 	const spawnsHereFrom = colo.from[coloCode]
 		? colo.from[coloCode].map((e) => {
-				related.add(e);
-				connections.push([e, coloCode]);
-				return { name: iata[e], code: e };
-			})
+			related.add(e);
+			connections.push([e, coloCode]);
+			return { name: iata[e], code: e };
+		})
 		: [];
 	const spawnsHereRegions = Object.entries(region.hosts).filter(
 		([_, colos]) => colos[coloCode],
