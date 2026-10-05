@@ -4,3 +4,4 @@ dist
 .wrangler
 .turbo
 packages/iata/src/data.json
+.DS_STORE

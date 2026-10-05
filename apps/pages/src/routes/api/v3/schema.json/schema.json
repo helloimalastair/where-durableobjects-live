@@ -56,6 +56,8 @@
 								"weur",
 								"eeur",
 								"apac",
+								"apac-ne",
+								"apac-se",
 								"oc",
 								"afr",
 								"me"
@@ -66,7 +68,7 @@
 							"type": "object",
 							"description": "Latency in milliseconds from the given Worker colo to each region.",
 							"patternProperties": {
-								"^(wnam|enam|sam|weur|eeur|apac|oc|afr|me)$": {
+								"^(wnam|enam|sam|weur|eeur|apac|apac-ne|apac-se|oc|afr|me)$": {
 									"type": "number",
 									"minimum": 0
 								}
@@ -78,6 +80,8 @@
 								"weur",
 								"eeur",
 								"apac",
+								"apac-ne",
+								"apac-se",
 								"oc",
 								"afr",
 								"me"

@@ -1,4 +1,3 @@
-import { env } from "cloudflare:workers";
 import type { Region } from "@wdol/shared";
 import { analyticsEngineQuery } from "./utils";
 import type { RegionSQLResponse, RegionLatencySQLResponse, RegionLatency, RegionField, RegionHosts, WorkerColo } from "@wdol/types";
@@ -15,6 +14,8 @@ export default async function (): Promise<RegionField> {
 		weur: {},
 		eeur: {},
 		apac: {},
+		"apac-ne": {},
+		"apac-se": {},
 		oc: {},
 		afr: {},
 		me: {},

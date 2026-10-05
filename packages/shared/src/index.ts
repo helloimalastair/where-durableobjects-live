@@ -5,6 +5,8 @@ const regions = {
 	weur: "Western Europe",
 	eeur: "Eastern Europe",
 	apac: "Asia-Pacific",
+	"apac-ne": "Asia-Pacific Northeast",
+	"apac-se": "Asia-Pacific Southeast",
 	oc: "Oceania",
 	afr: "Africa",
 	me: "Middle East"

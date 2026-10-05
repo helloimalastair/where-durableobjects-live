@@ -6,7 +6,7 @@
 		"lint": "biome check --apply .",
 		"sync": "wrangler types types/worker.d.ts",
 		"dev": "wrangler dev -j --test-scheduled",
-		"deploy": "wrangler deploy -j"
+		"deploy": "wrangler deploy"
 	},
 	"devDependencies": {
 		"@wdol/shared": "workspace:*",
